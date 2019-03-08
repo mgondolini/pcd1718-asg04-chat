@@ -1,5 +1,6 @@
 package client;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -22,7 +23,7 @@ public class Controller implements Initializable{
 		//caricare le chatroom nwella listview
 	}
 
-	@FXML void addRoom(){
+	@FXML private void addRoom(ActionEvent event){
 
 	}
 
