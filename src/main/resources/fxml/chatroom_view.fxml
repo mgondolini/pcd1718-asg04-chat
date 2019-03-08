@@ -6,7 +6,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="396.0" prefWidth="456.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxml.ChatRoom">
+<AnchorPane prefHeight="396.0" prefWidth="456.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ChatRoomController">
    <children>
       <Label fx:id="chatRoomLabel" layoutX="14.0" layoutY="29.0" text="Chat Room Name" />
       <TextArea fx:id="messagesArea" layoutX="14.0" layoutY="71.0" prefHeight="260.0" prefWidth="425.0" />
