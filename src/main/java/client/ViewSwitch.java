@@ -1,4 +1,4 @@
-package client;
+package client;   
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -9,7 +9,7 @@ import java.util.Objects;
 class ViewSwitch {
 
 	private String view;
-	private Scene scene;  
+	private Scene scene;
 
 	ViewSwitch(String view, Scene scene){
 		this.view = view;
