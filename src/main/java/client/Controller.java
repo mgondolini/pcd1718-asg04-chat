@@ -22,6 +22,7 @@ public class Controller implements Initializable{
 	@FXML ListView<String> roomsListView;
 	private String chatName;
 	private ViewSwitch viewSwitch;
+	private User user;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -40,6 +41,7 @@ public class Controller implements Initializable{
 
 	@FXML private void enterRoom() {
 		String username = usernameField.getText();
+		user = new User(username);
 		//entrare nella chatroom selezionata (controllo)
 		//cambiare view
 
