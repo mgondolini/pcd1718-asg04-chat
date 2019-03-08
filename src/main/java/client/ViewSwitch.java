@@ -9,7 +9,7 @@ import java.util.Objects;
 class ViewSwitch {
 
 	private String view;
-	private Scene scene;
+	private Scene scene;  
 
 	ViewSwitch(String view, Scene scene){
 		this.view = view;
