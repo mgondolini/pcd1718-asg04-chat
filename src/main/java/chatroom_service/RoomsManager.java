@@ -1,6 +1,7 @@
 package chatroom_service;
 
 import com.rabbitmq.client.*;
+import org.bson.Document;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,6 +37,8 @@ public class RoomsManager {
 				room = new String(body, "UTF-8");
 				roomsList.add(room);
 				System.out.println("Room to add: "+room+"\tRooms: " + roomsList);
+				DatabaseConnection dbConnection = new DatabaseConnection();
+				dbConnection.insert( new Document("name", room));
 //				connessione al db con future
 //					channel.basicPublish("", MESSAGES_TO_DISPATCH, null, addUserMsg.getBytes("UTF-8"));
 			}
