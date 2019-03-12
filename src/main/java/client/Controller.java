@@ -56,7 +56,7 @@ public class Controller implements Initializable{
 		roomsListView.setItems(obsList);
 	}
 
-	@FXML private void removeRoom() {
+	@FXML private void removeRoom() throws IOException {
 		roomName = chatNameField.getText();
 		//rimuovere la room selezionata dal database
 		obsList.removeAll(chatList);

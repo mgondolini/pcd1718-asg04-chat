@@ -15,7 +15,7 @@ public class RoomsManager {
 	private final static String ROOMS_LIST_EXCHANGE = "rooms_list_exchange";
 
 	private static String room;
-	private static ArrayList<String> roomsList;
+	private static ArrayList<String> roomsList = new ArrayList<>(); //da riempire dal db
 
 	public static void main(String[] argv) throws Exception {
 
@@ -33,18 +33,27 @@ public class RoomsManager {
 			@Override
 			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
 					throws IOException {
-				System.out.println("wewewe");
 				room = new String(body, "UTF-8");
-				System.out.println("room "+room);
 				roomsList.add(room);
-				System.out.println("Rooms List 1: " + roomsList);
-				System.out.println(" [+][" + room.toUpperCase() + "] joined the group");
+				System.out.println("Room to add: "+room+"\tRooms: " + roomsList);
 //				connessione al db con future
 //					channel.basicPublish("", MESSAGES_TO_DISPATCH, null, addUserMsg.getBytes("UTF-8"));
 			}
 		};
 		channel.basicConsume(ADD_ROOM_QUEUE, true, addRoomConsumer);
 
+		Consumer removeRoomConsumer = new DefaultConsumer(channel){
+			@Override
+			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
+					throws IOException {
+				room = new String(body, "UTF-8");
+				roomsList.remove(room);
+				System.out.println("Room to remove: "+room+"\tRooms: " + roomsList);
+//				connessione al db con future
+//					channel.basicPublish("", MESSAGES_TO_DISPATCH, null, addUserMsg.getBytes("UTF-8"));
+			}
+		};
+		channel.basicConsume(REMOVE_ROOM_QUEUE, true, removeRoomConsumer);
 
 	}
 

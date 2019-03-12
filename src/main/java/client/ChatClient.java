@@ -3,6 +3,7 @@ package client;
 import com.rabbitmq.client.*;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeoutException;
 
@@ -41,8 +42,9 @@ public class ChatClient {
 		return getRoomsList();
 	}
 
-	public ArrayList<String> removeRoom(String room){
+	public ArrayList<String> removeRoom(String room) throws IOException {
 		rooms.remove(room); // nel db
+		channel.basicPublish("", REMOVE_ROOM_QUEUE, null, room.getBytes("UTF-8"));
 		return getRoomsList();
 	}
 
