@@ -8,19 +8,18 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
-import javafx.event.ActionEvent;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class ChatRoomController implements Initializable {
 
-	@FXML Button sendButton;
-	@FXML Button quitButton;
-	@FXML TextField messageField;
-	@FXML TextArea messagesArea;
+	@FXML private Button sendButton;
+	@FXML private Button quitButton;
+	@FXML private TextField messageField;
+	@FXML private TextArea messagesArea;
 	private ViewSwitch viewSwitch;
+	private User user;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -29,7 +28,7 @@ public class ChatRoomController implements Initializable {
 
 	@FXML private void sendMessage(){
 		String message = messageField.getText();
-		messagesArea.appendText(message+"\n");
+//		messagesArea.appendText(user.getUsername()+": "+message+"\n");
 		//inviare il messaggio al dispatcher
 	}
 

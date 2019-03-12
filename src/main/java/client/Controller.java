@@ -1,6 +1,8 @@
 package client;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
@@ -10,33 +12,52 @@ import javafx.scene.control.TextField;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable{
 
-	@FXML Button addButton;
-	@FXML Button removeButton;
-	@FXML Button enterButton;
-	@FXML TextField usernameField;
-	@FXML TextField chatNameField;
-	@FXML ListView<String> roomsListView;
-	private String chatName;
+	@FXML private Button addButton;
+	@FXML private Button removeButton;
+	@FXML private Button enterButton;
+	@FXML private TextField usernameField;
+	@FXML private TextField chatNameField;
+	@FXML private ListView<String> roomsListView;
+	private String roomName;
 	private ViewSwitch viewSwitch;
 	private User user;
+	private ChatClient chatClient;
+	private ObservableList<String> obsList = FXCollections.observableArrayList();
+	private ArrayList<String> chatList;
+
+	public Controller(){
+		this.chatClient = new ChatClient();
+	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		//caricare le chatroom nella listview
+		chatList = chatClient.getRoomsList();
+		obsList.addAll(chatList);
+		roomsListView.setItems(obsList);
 	}
 
 	@FXML private void addRoom(){
 		//aggiugere una nuova room nel db
-		chatName = chatNameField.getText();
+		roomName = chatNameField.getText();
+		obsList.removeAll(chatList);
+		chatList = chatClient.addRoom(roomName);
+		obsList.addAll(chatList);
+		roomsListView.setItems(obsList);
 	}
 
-	@FXML private void removeRoom(){
-		chatName = chatNameField.getText();
+	@FXML private void removeRoom() {
+		roomName = chatNameField.getText();
 		//rimuovere la room selezionata dal database
+		obsList.removeAll(chatList);
+		chatList = chatClient.removeRoom(roomName);
+		obsList.addAll(chatList);
+		roomsListView.setItems(obsList);
 	}
 
 	@FXML private void enterRoom() {
