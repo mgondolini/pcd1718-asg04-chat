@@ -33,6 +33,7 @@ public class ChatClient {
 	}
 
 	public ArrayList<String> getRoomsList(){
+		//exchange che riceve la lista
 		return rooms;
 	}
 
