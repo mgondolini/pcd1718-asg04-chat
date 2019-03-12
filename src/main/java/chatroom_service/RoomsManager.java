@@ -17,6 +17,7 @@ public class RoomsManager {
 
 	private static String room;
 	private static ArrayList<String> roomsList = new ArrayList<>(); //da riempire dal db
+	private static DatabaseConnection dbConnection = new DatabaseConnection();
 
 	public static void main(String[] argv) throws Exception {
 
@@ -34,11 +35,19 @@ public class RoomsManager {
 			@Override
 			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
 					throws IOException {
+				Document document = new Document("_id",1);
 				room = new String(body, "UTF-8");
-				roomsList.add(room);
+				if(roomsList.isEmpty()){
+					roomsList.add(room);
+					dbConnection.insert(document.append("rooms", room));
+				}
+				else{
+					roomsList.add(room);
+					dbConnection.update(document, new Document("rooms", roomsList.toString()));
+				}
 				System.out.println("Room to add: "+room+"\tRooms: " + roomsList);
-				DatabaseConnection dbConnection = new DatabaseConnection();
-				dbConnection.insert( new Document("name", room));
+
+
 //				connessione al db con future
 //					channel.basicPublish("", MESSAGES_TO_DISPATCH, null, addUserMsg.getBytes("UTF-8"));
 			}
