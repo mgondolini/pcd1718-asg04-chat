@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.concurrent.TimeoutException;
 
 public class Controller implements Initializable{
 
@@ -31,7 +32,11 @@ public class Controller implements Initializable{
 	private ArrayList<String> chatList;
 
 	public Controller(){
-		this.chatClient = new ChatClient();
+		try {
+			this.chatClient = new ChatClient();
+		} catch (IOException | TimeoutException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -42,7 +47,7 @@ public class Controller implements Initializable{
 		roomsListView.setItems(obsList);
 	}
 
-	@FXML private void addRoom(){
+	@FXML private void addRoom() throws IOException {
 		//aggiugere una nuova room nel db
 		roomName = chatNameField.getText();
 		obsList.removeAll(chatList);
