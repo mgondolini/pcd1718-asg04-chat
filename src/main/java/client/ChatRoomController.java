@@ -5,12 +5,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.TimeoutException;
 
 public class ChatRoomController implements Initializable {
 
@@ -18,17 +20,42 @@ public class ChatRoomController implements Initializable {
 	@FXML private Button quitButton;
 	@FXML private TextField messageField;
 	@FXML private TextArea messagesArea;
+	@FXML private Label chatRoomLabel;
 	private ViewSwitch viewSwitch;
 	private User user;
+	private String username;
+	private String room;
+	private ChatRoomClient chatRoomClient;
+
+	public ChatRoomController(){
+//		this.user = user;
+//		System.out.println(room+"room");
+//		this.room = room;
+//		this.username = user.getUsername();
+		try {
+			chatRoomClient = new ChatRoomClient();
+		} catch (IOException | TimeoutException e) {
+			e.printStackTrace();
+		}
+	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+
+		try {
+			room = chatRoomClient.getRoom();
+			username = chatRoomClient.getUser();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		//lista utenti partecipanti, messaggi
+		chatRoomLabel.setText(room);
+		System.out.println("wtf"+room+username);
 	}
 
 	@FXML private void sendMessage(){
-		String message = messageField.getText();
-//		messagesArea.appendText(user.getUsername()+": "+message+"\n");
+		String message = username+": "+messageField.getText();
+		messagesArea.appendText(message+"\n");
 		//inviare il messaggio al dispatcher
 	}
 
@@ -43,5 +70,14 @@ public class ChatRoomController implements Initializable {
 				e.printStackTrace();
 			}
 		});
+	}
+
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public void setRoom(String room) {
+		this.room = room;
 	}
 }

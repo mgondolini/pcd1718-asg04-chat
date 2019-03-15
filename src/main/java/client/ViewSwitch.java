@@ -2,6 +2,7 @@ package client;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -20,4 +21,5 @@ class ViewSwitch {
 		scene.setRoot(FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource(view))));
 		scene.getWindow().sizeToScene();
 	}
+
 }

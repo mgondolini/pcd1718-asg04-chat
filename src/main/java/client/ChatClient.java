@@ -3,6 +3,7 @@ package client;
 import com.rabbitmq.client.*;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.TimeoutException;
@@ -15,6 +16,8 @@ public class ChatClient {
 	private final static String ADD_ROOM_QUEUE = "add_room_queue";
 	private final static String REMOVE_ROOM_QUEUE = "remove_room_queue";
 	private final static String REQUEST_LIST_QUEUE = "request_list_queue";
+	private final static String SELECTED_ROOM_QUEUE = "selected_room_queue";
+	private final static String SELECTED_USER_QUEUE = "selected_user_queue";
 	//EXCHANGES
 	private final static String ROOMS_LIST_EXCHANGE = "rooms_list_exchange";
 
@@ -35,6 +38,8 @@ public class ChatClient {
 		channel.queueDeclare(ADD_ROOM_QUEUE, false, false, false, null);
 		channel.queueDeclare(REMOVE_ROOM_QUEUE, false, false, false, null);
 		channel.queueDeclare(REQUEST_LIST_QUEUE, false, false, false, null);
+		channel.queueDeclare(SELECTED_ROOM_QUEUE, false, false, false, null);
+		channel.queueDeclare(SELECTED_USER_QUEUE, false, false, false, null);
 
 		channel.exchangeDeclare(ROOMS_LIST_EXCHANGE, "fanout");
 		queueListName = channel.queueDeclare().getQueue();
@@ -80,6 +85,14 @@ public class ChatClient {
 			channel.basicPublish("", REMOVE_ROOM_QUEUE, null, room.getBytes("UTF-8"));
 		}
 		return getRoomsList();
+	}
+
+	public void setRoom(String room) throws IOException {
+		channel.basicPublish("", SELECTED_ROOM_QUEUE, null, room.getBytes("UTF-8"));
+	}
+
+	public void setUser(User user) throws IOException {
+		channel.basicPublish("", SELECTED_USER_QUEUE, null, user.getUsername().getBytes("UTF-8"));
 	}
 
 	//sendmsg

@@ -24,6 +24,7 @@ public class Controller implements Initializable{
 	@FXML private TextField usernameField;
 	@FXML private TextField chatNameField;
 	@FXML private ListView<String> roomsListView;
+
 	private String roomName;
 	private ViewSwitch viewSwitch;
 	private User user;
@@ -69,16 +70,21 @@ public class Controller implements Initializable{
 		roomsListView.setItems(obsList);
 	}
 
-	@FXML private void enterRoom() {
+	@FXML private void enterRoom() throws IOException {
 		String username = usernameField.getText();
+		String selection = roomsListView.getSelectionModel().getSelectedItem();
+
 		user = new User(username);
-		//entrare nella chatroom selezionata (controllo)
-		//cambiare view
+		user.setUsername(username);
+
 
 		String view = "fxml/chatroom_view.fxml";
 		Scene scene = enterButton.getScene();
 
 		viewSwitch = new ViewSwitch(view, scene);
+		chatClient.setRoom(selection);
+		chatClient.setUser(user);
+
 		Platform.runLater(() -> {
 			try {
 				viewSwitch.changeView();
