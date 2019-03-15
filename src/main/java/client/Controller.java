@@ -42,7 +42,11 @@ public class Controller implements Initializable{
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		//caricare le chatroom nella listview
-		chatList = chatClient.getRoomsList();
+		try {
+			chatList = chatClient.getRoomsList();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		obsList.addAll(chatList);
 		roomsListView.setItems(obsList);
 	}

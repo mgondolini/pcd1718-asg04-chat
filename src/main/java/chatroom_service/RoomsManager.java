@@ -13,6 +13,7 @@ public class RoomsManager {
 	//QUEUES
 	private final static String ADD_ROOM_QUEUE = "add_room_queue";
 	private final static String REMOVE_ROOM_QUEUE = "remove_room_queue";
+	private final static String REQUEST_LIST_QUEUE = "request_list_queue";
 
 	//EXCHANGES
 	private final static String ROOMS_LIST_EXCHANGE = "rooms_list_exchange";
@@ -31,10 +32,22 @@ public class RoomsManager {
 
 		channel.queueDeclare(ADD_ROOM_QUEUE, false, false, false, null);
 		channel.queueDeclare(REMOVE_ROOM_QUEUE, false, false, false, null);
+		channel.queueDeclare(REQUEST_LIST_QUEUE, false, false, false, null);
 
 		channel.exchangeDeclare(ROOMS_LIST_EXCHANGE, "fanout");
 
 		roomsList = populateList();
+
+		Consumer roomsListConsumer = new DefaultConsumer(channel) {
+			@Override
+			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
+					throws IOException {
+				System.out.println("Rooms List: "+roomsList);
+				String usr = new String(body, "UTF-8");
+				channel.basicPublish(ROOMS_LIST_EXCHANGE, usr, null, roomsToString(roomsList).getBytes("UTF-8"));
+			}
+		};
+		channel.basicConsume(REQUEST_LIST_QUEUE, true, roomsListConsumer);
 
 		Consumer addRoomConsumer = new DefaultConsumer(channel){
 			@Override
@@ -45,8 +58,7 @@ public class RoomsManager {
 				try {
 					roomsList = addRoom(room, roomsList);
 				} catch (ExecutionException | InterruptedException e) {e.printStackTrace();}
-
-//					channel.basicPublish("", MESSAGES_TO_DISPATCH, null, addUserMsg.getBytes("UTF-8"));
+//					channel.basicPublish("", ROOMS_LIST_EXCHANGE, null, roomsList.toString().getBytes("UTF-8"));
 			}
 		};
 		channel.basicConsume(ADD_ROOM_QUEUE, true, addRoomConsumer);
@@ -59,8 +71,7 @@ public class RoomsManager {
 				try {
 					roomsList = removeRoom(room, roomsList);
 				} catch (ExecutionException | InterruptedException e) {e.printStackTrace();}
-//				connessione al db con future
-//					channel.basicPublish("", MESSAGES_TO_DISPATCH, null, addUserMsg.getBytes("UTF-8"));
+//					channel.basicPublish("", ROOMS_LIST_EXCHANGE, null, roomsList.toString().getBytes("UTF-8"));
 			}
 		};
 		channel.basicConsume(REMOVE_ROOM_QUEUE, true, removeRoomConsumer);
@@ -78,12 +89,9 @@ public class RoomsManager {
 		if(roomsList.isEmpty()){
 			roomsList.add(room);
 			dbConnection.insert(document.append("rooms", room));
-		}
-		else{
+		}else{
 			roomsList.add(room);
-			String rooms = roomsList.toString().replace("[", "");
-			rooms = rooms.replace("]","");
-			System.out.println(rooms);
+			String rooms = roomsToString(roomsList);
 			dbConnection.update(document, new Document("rooms", rooms));
 		}
 		System.out.println("Room to add: "+room+"\tRooms: " + roomsList);
@@ -93,9 +101,17 @@ public class RoomsManager {
 	private static ArrayList<String> removeRoom(String room, ArrayList<String> roomsList) throws ExecutionException, InterruptedException {
 		document = new Document("_id",1);
 		roomsList.remove(room);
-		dbConnection.update(document, new Document("rooms", roomsList.toString()));
+		String rooms = roomsToString(roomsList);
+		dbConnection.update(document, new Document("rooms", rooms));
 		System.out.println("Room to remove: "+room+"\tRooms: " + roomsList);
 		return roomsList;
+	}
+
+	private static String roomsToString(ArrayList<String> roomsList){
+		String rooms = roomsList.toString();
+		rooms = rooms.replace("[", "");
+		rooms = rooms.replace("]","");
+		return rooms;
 	}
 
 }
