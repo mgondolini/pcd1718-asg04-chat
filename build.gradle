@@ -47,8 +47,8 @@ dependencies {
     compile 'com.typesafe.akka:akka-remote_2.12:2.5.3'
 
     //Mongo
-    compile 'org.mongodb:mongodb-driver:3.4.3'
-    compile 'org.mongodb:mongodb-java-driver:3.4.3'
+    compile 'org.mongodb:mongodb-driver:3.0.4'
+    compile 'org.mongodb:mongodb-java-driver:3.0.4'
     compile 'org.mongodb:mongodb-driver-async:3.0.4'
 
     // RabbitMQ
@@ -56,24 +56,6 @@ dependencies {
     compile group: 'com.rabbitmq', name: 'amqp-client', version: '5.2.0'
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
 
-
-    task stage(dependsOn: ['build', 'clean'])
-    build.mustRunAfter clean
-
-    task copyToLib(type: Copy) {
-        into "$buildDir/lib"
-        from(configurations.compile)
-    }
-
-    stage.dependsOn(copyToLib)
-
-    jar {
-        manifest {
-            attributes(
-                    'Main-Class': 'chat_rabbitmq.MsgDispatcherService'
-            )
-        }
-    }
 
 
 }

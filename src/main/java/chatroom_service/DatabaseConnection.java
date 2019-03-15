@@ -1,14 +1,14 @@
 package chatroom_service;
 
-
-import com.mongodb.async.SingleResultCallback;
 import com.mongodb.async.client.MongoClient;
 import com.mongodb.async.client.MongoClients;
 import com.mongodb.async.client.MongoCollection;
 import com.mongodb.async.client.MongoDatabase;
-import com.mongodb.client.model.InsertOneOptions;
 import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 
 public class DatabaseConnection {
@@ -31,9 +31,24 @@ public class DatabaseConnection {
 		collection.insertOne(document, (result, t) -> System.out.println("Inserted!"));
 	}
 
-	public void update(Document document, Document update){
+	//Controllare a Forlì
+	public UpdateResult update(Document document, Document update) throws ExecutionException, InterruptedException {
 		//ritornare una future?
-		collection.updateOne(document, new Document("$set",update), (result, t) -> System.out.println(result.getModifiedCount()));
+		CompletableFuture<UpdateResult> future = new CompletableFuture<>();
+		collection.updateOne(document, new Document("$set",update), (result, t) -> {
+			if(result != null) future.complete(result);
+			else future.completeExceptionally(t);
+		});
+		return future.get();
+	}
+
+	public String getRooms(Document document) throws ExecutionException, InterruptedException {
+		CompletableFuture<String> future = new CompletableFuture<>();
+		collection.find(document).first((result, t) -> {
+			if(result != null) future.complete(result.get("rooms").toString());
+			else future.completeExceptionally(t);
+		});
+		return future.get();
 	}
 
 }
