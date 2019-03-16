@@ -3,7 +3,6 @@ package client;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
-import sun.plugin.javascript.navig.Anchor;
 
 import java.io.IOException;
 import java.util.Objects;
