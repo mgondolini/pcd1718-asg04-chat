@@ -7,21 +7,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.TimeoutException;
 
+import static queues.Queues.SELECTED_ROOM_QUEUE;
+import static queues.Queues.SELECTED_USER_QUEUE;
+
 public class ChatRoomClient {
 	private ArrayList<String> rooms;
-
-	//QUEUES
-	private final static String SELECTED_USER_QUEUE = "selected_user_queue";
-	private final static String SELECTED_ROOM_QUEUE = "selected_room_queue";
-	//EXCHANGES
-	private final static String ROOMS_LIST_EXCHANGE = "rooms_list_exchange";
 
 	private ConnectionFactory factory;
 	private Connection connection;
 	private Channel channel;
-	private String queueListName;
+
 	Boolean received = false;
-	Boolean receivedUser = false;
 	private String room;
 	private String username;
 

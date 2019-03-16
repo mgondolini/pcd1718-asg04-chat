@@ -8,15 +8,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
+import static queues.Queues.*;
+
 public class RoomsManager {
-
-	//QUEUES
-	private final static String ADD_ROOM_QUEUE = "add_room_queue";
-	private final static String REMOVE_ROOM_QUEUE = "remove_room_queue";
-	private final static String REQUEST_LIST_QUEUE = "request_list_queue";
-
-	//EXCHANGES
-	private final static String ROOMS_LIST_EXCHANGE = "rooms_list_exchange";
 
 	private static String room;
 	private static ArrayList<String> roomsList = new ArrayList<>(); //da riempire dal db

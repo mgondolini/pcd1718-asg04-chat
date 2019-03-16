@@ -3,23 +3,15 @@ package client;
 import com.rabbitmq.client.*;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.TimeoutException;
 
+import static queues.Queues.*;
+
 public class ChatClient {
 
 	private ArrayList<String> rooms;
-
-	//QUEUES
-	private final static String ADD_ROOM_QUEUE = "add_room_queue";
-	private final static String REMOVE_ROOM_QUEUE = "remove_room_queue";
-	private final static String REQUEST_LIST_QUEUE = "request_list_queue";
-	private final static String SELECTED_ROOM_QUEUE = "selected_room_queue";
-	private final static String SELECTED_USER_QUEUE = "selected_user_queue";
-	//EXCHANGES
-	private final static String ROOMS_LIST_EXCHANGE = "rooms_list_exchange";
 
 	private ConnectionFactory factory;
 	private Connection connection;
