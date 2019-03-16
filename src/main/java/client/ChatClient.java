@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.TimeoutException;
 
-import static queues.Queues.*;
+import static config.RabbitConfig.*;
 
 public class ChatClient {
 
@@ -30,8 +30,6 @@ public class ChatClient {
 		channel.queueDeclare(ADD_ROOM_QUEUE, false, false, false, null);
 		channel.queueDeclare(REMOVE_ROOM_QUEUE, false, false, false, null);
 		channel.queueDeclare(REQUEST_LIST_QUEUE, false, false, false, null);
-		channel.queueDeclare(SELECTED_ROOM_QUEUE, false, false, false, null);
-		channel.queueDeclare(SELECTED_USER_QUEUE, false, false, false, null);
 
 		channel.exchangeDeclare(ROOMS_LIST_EXCHANGE, "fanout");
 		queueListName = channel.queueDeclare().getQueue();
@@ -48,6 +46,7 @@ public class ChatClient {
 						throws IOException {
 					String roomsReceived = new String(body, "UTF-8");
 					System.out.println("roomsReceived " + roomsReceived);
+					//TODO controllare se la lista è vuota
 //					if(!roomsReceived.isEmpty())
 						rooms = new ArrayList<>(Arrays.asList(roomsReceived.split(", ")));
 //					else
@@ -65,26 +64,18 @@ public class ChatClient {
 			rooms.add(room);
 			channel.basicPublish("", ADD_ROOM_QUEUE, null, room.getBytes("UTF-8"));
 		}
-		else System.out.println("nome già in uso"); //dialog o label
+		else System.out.println("nome già in uso"); //TODO dialog o label
 		return getRoomsList();
 	}
 
 	public ArrayList<String> removeRoom(String room) throws IOException {
 		if(!rooms.contains(room))
-			System.out.println("nome non presente"); //dialog o label
+			System.out.println("nome non presente"); //TODO dialog o label
 		else {
 			rooms.remove(room); // nel db
 			channel.basicPublish("", REMOVE_ROOM_QUEUE, null, room.getBytes("UTF-8"));
 		}
 		return getRoomsList();
-	}
-
-	public void setRoom(String room) throws IOException {
-		channel.basicPublish("", SELECTED_ROOM_QUEUE, null, room.getBytes("UTF-8"));
-	}
-
-	public void setUser(User user) throws IOException {
-		channel.basicPublish("", SELECTED_USER_QUEUE, null, user.getUsername().getBytes("UTF-8"));
 	}
 
 	//sendmsg

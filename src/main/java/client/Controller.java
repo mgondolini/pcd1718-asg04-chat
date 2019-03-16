@@ -16,10 +16,10 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeoutException;
 
+import static config.ViewConfig.chatRoomView;
+
 public class Controller implements Initializable{
 
-	@FXML private Button addButton;
-	@FXML private Button removeButton;
 	@FXML private Button enterButton;
 	@FXML private TextField usernameField;
 	@FXML private TextField chatNameField;
@@ -70,24 +70,18 @@ public class Controller implements Initializable{
 		roomsListView.setItems(obsList);
 	}
 
-	@FXML private void enterRoom() throws IOException {
+	@FXML private void enterRoom(){
 		String username = usernameField.getText();
 		String selection = roomsListView.getSelectionModel().getSelectedItem();
 
 		user = new User(username);
-		user.setUsername(username);
 
-
-		String view = "fxml/chatroom_view.fxml";
 		Scene scene = enterButton.getScene();
-
-		viewSwitch = new ViewSwitch(view, scene);
-		chatClient.setRoom(selection);
-		chatClient.setUser(user);
+		viewSwitch = new ViewSwitch(chatRoomView, scene);
 
 		Platform.runLater(() -> {
 			try {
-				viewSwitch.changeView();
+				viewSwitch.changeToRoomView(user,selection);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

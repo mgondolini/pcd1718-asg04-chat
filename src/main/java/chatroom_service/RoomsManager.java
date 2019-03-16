@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
-import static queues.Queues.*;
+import static config.RabbitConfig.*;
 
 public class RoomsManager {
 
@@ -20,7 +20,7 @@ public class RoomsManager {
 	public static void main(String[] argv) throws Exception {
 
 		ConnectionFactory factory = new ConnectionFactory();
-		factory.setHost("localhost");
+		factory.setHost(localhost);
 		Connection connection = factory.newConnection();
 		Channel channel = connection.createChannel();
 

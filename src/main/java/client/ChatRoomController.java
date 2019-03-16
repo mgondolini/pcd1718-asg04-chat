@@ -12,7 +12,8 @@ import javafx.scene.control.TextField;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.concurrent.TimeoutException;
+
+import static config.ViewConfig.mainView;
 
 public class ChatRoomController implements Initializable {
 
@@ -22,35 +23,27 @@ public class ChatRoomController implements Initializable {
 	@FXML private TextArea messagesArea;
 	@FXML private Label chatRoomLabel;
 	private ViewSwitch viewSwitch;
+
 	private User user;
 	private String username;
 	private String room;
-	private ChatRoomClient chatRoomClient;
 
 	public ChatRoomController(){
-//		this.user = user;
-//		System.out.println(room+"room");
-//		this.room = room;
 //		this.username = user.getUsername();
-		try {
-			chatRoomClient = new ChatRoomClient();
-		} catch (IOException | TimeoutException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			chatRoomClient = new ChatRoomClient();
+//		} catch (IOException | TimeoutException e) {
+//			e.printStackTrace();
+//		}
 	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-
-		try {
-			room = chatRoomClient.getRoom();
-			username = chatRoomClient.getUser();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		//lista utenti partecipanti, messaggi
-		chatRoomLabel.setText(room);
-		System.out.println("wtf"+room+username);
+		Platform.runLater(() -> {
+			username = getUser().getUsername();
+			chatRoomLabel.setText(getRoom());
+			System.out.println("wtf"+getRoom()+username);
+		});
 	}
 
 	@FXML private void sendMessage(){
@@ -60,9 +53,8 @@ public class ChatRoomController implements Initializable {
 	}
 
 	@FXML private void quitChat(){
-		String view = "fxml/main_view.fxml";
 		Scene scene = quitButton.getScene();
-		viewSwitch = new ViewSwitch(view,scene);
+		viewSwitch = new ViewSwitch(mainView, scene);
 		Platform.runLater(()-> {
 			try {
 				viewSwitch.changeView();
@@ -80,4 +72,13 @@ public class ChatRoomController implements Initializable {
 	public void setRoom(String room) {
 		this.room = room;
 	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public String getRoom() {
+		return room;
+	}
+
 }
