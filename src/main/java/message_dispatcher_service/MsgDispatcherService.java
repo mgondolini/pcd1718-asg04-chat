@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static config.RabbitConfig.CHAT_MSG_QUEUE;
-import static config.RabbitConfig.DISPATCH_MESSAGES_EXCHANGE;
+import static config.RabbitConfig.DISPATCH_MESSAGES;
 
 public class MsgDispatcherService {
 
@@ -19,7 +19,7 @@ public class MsgDispatcherService {
 		Channel channel = connection.createChannel();
 
 		channel.queueDeclare(CHAT_MSG_QUEUE, false, false, false, null);
-		channel.exchangeDeclare(DISPATCH_MESSAGES_EXCHANGE, "fanout");
+		channel.exchangeDeclare(DISPATCH_MESSAGES, "topic");
 
 		System.out.println(" _-_ MESSAGE DISPATCHER _-_");
 
@@ -32,7 +32,8 @@ public class MsgDispatcherService {
 				String timestamp = new SimpleDateFormat("HH.mm.ss").format(new Date());
 				String timestampedMsg = message+"\t\t("+timestamp+")";
 				System.out.println(timestampedMsg);
-				channel.basicPublish(DISPATCH_MESSAGES_EXCHANGE, "", null, timestampedMsg.getBytes("UTF-8"));
+				//TODO trovare un modo per passare la ROOM per exchage tipo topic
+				channel.basicPublish(DISPATCH_MESSAGES, "room2", null, timestampedMsg.getBytes("UTF-8"));
 			}
 		};
 		channel.basicConsume(CHAT_MSG_QUEUE, true, chatMessageConsumer);

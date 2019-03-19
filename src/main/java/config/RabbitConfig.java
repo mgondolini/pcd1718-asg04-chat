@@ -12,5 +12,5 @@ public class RabbitConfig {
 
 	//EXCHANGES
 	public final static String ROOMS_LIST_EXCHANGE = "rooms_list_exchange";
-	public final static String DISPATCH_MESSAGES_EXCHANGE = "dispatch_messages_exchange";
+	public final static String DISPATCH_MESSAGES = "dispatch_messages";
 }

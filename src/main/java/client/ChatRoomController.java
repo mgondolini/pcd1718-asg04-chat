@@ -30,7 +30,7 @@ public class ChatRoomController implements Initializable {
 	private String room;
 
 	public ChatRoomController() throws IOException, TimeoutException {
-		chatRoomClient = new ChatRoomClient(this);
+
 	}
 
 	@Override
@@ -39,6 +39,11 @@ public class ChatRoomController implements Initializable {
 			username = getUser().getUsername();
 			chatRoomLabel.setText(getRoom());
 			System.out.println("Welcome to "+getRoom()+"user "+username); //TODO debug
+			try {
+				chatRoomClient = new ChatRoomClient(this, getRoom());
+			} catch (IOException | TimeoutException e) {
+				e.printStackTrace();
+			}
 		});
 	}
 

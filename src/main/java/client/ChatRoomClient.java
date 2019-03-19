@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 import static config.RabbitConfig.CHAT_MSG_QUEUE;
-import static config.RabbitConfig.DISPATCH_MESSAGES_EXCHANGE;
+import static config.RabbitConfig.DISPATCH_MESSAGES;
 
 public class ChatRoomClient {
 
@@ -15,7 +15,7 @@ public class ChatRoomClient {
 	private String dispatchMsgExchange;
 	private String message;
 
-	public ChatRoomClient(ChatRoomController chatRoomController) throws IOException, TimeoutException {
+	public ChatRoomClient(ChatRoomController chatRoomController, String room) throws IOException, TimeoutException {
 		ConnectionFactory factory = new ConnectionFactory();
 		factory.setHost("localhost");
 		Connection connection = factory.newConnection();
@@ -23,9 +23,9 @@ public class ChatRoomClient {
 
 		channel.queueDeclare(CHAT_MSG_QUEUE, false, false, false, null);
 
-		channel.exchangeDeclare(DISPATCH_MESSAGES_EXCHANGE, "fanout");
+		channel.exchangeDeclare(DISPATCH_MESSAGES, "topic");
 		dispatchMsgExchange = channel.queueDeclare().getQueue();
-		channel.queueBind(dispatchMsgExchange, DISPATCH_MESSAGES_EXCHANGE, "");
+		channel.queueBind(dispatchMsgExchange, DISPATCH_MESSAGES, room);
 
 		this.chatRoomController = chatRoomController;
 		receiveMessage();
