@@ -13,7 +13,7 @@ public class ChatRoomClient {
 	private Channel channel;
 	private ChatRoomController chatRoomController;
 	private String dispatchMsgExchange;
-	private Boolean received = false;
+	private String message;
 
 	public ChatRoomClient(ChatRoomController chatRoomController) throws IOException, TimeoutException {
 		ConnectionFactory factory = new ConnectionFactory();
@@ -28,11 +28,11 @@ public class ChatRoomClient {
 		channel.queueBind(dispatchMsgExchange, DISPATCH_MESSAGES_EXCHANGE, "");
 
 		this.chatRoomController = chatRoomController;
+		receiveMessage();
 	}
 
 	public void sendMessage(String msg) throws IOException{
 		if(!msg.equals("")){
-			System.out.println("invio msg");
 			channel.basicPublish("", CHAT_MSG_QUEUE, null, msg.getBytes("UTF-8"));
 		}else{
 			System.out.println("cannote send empty msg");
@@ -41,20 +41,20 @@ public class ChatRoomClient {
 	}
 
 	public void receiveMessage() throws IOException{
-		//display dispatched messages
-		while (!received) {
-			Consumer dispatcherConsumer = new DefaultConsumer(channel) {
-				@Override
-				public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
-						throws IOException {
-					String message = new String(body, "UTF-8");
-					chatRoomController.receiveMessage(message);
-					received = true;
-				}
-			};
-			channel.basicConsume(dispatchMsgExchange, true, dispatcherConsumer);
-		}
-		received = false;
+		Consumer dispatcherConsumer = new DefaultConsumer(channel) {
+			@Override
+			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
+					throws IOException {
+				String msg = new String(body, "UTF-8");
+				setMessage(msg);
+				chatRoomController.receiveMessage(message);
+			}
+		};
+		channel.basicConsume(dispatchMsgExchange, true, dispatcherConsumer);
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 }

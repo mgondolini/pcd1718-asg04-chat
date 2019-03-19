@@ -38,7 +38,7 @@ public class ChatRoomController implements Initializable {
 		Platform.runLater(() -> {
 			username = getUser().getUsername();
 			chatRoomLabel.setText(getRoom());
-			System.out.println("Welcome to "+getRoom()+" user "+username); //TODO debug
+			System.out.println("Welcome to "+getRoom()+"user "+username); //TODO debug
 		});
 	}
 
@@ -59,7 +59,7 @@ public class ChatRoomController implements Initializable {
 		});
 	}
 
-	public void receiveMessage(String message){
+	public void receiveMessage(String message) {
 		messagesArea.appendText(message + "\n");
 	}
 
