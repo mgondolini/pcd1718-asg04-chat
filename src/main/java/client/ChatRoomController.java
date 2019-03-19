@@ -12,44 +12,46 @@ import javafx.scene.control.TextField;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.TimeoutException;
 
 import static config.ViewConfig.mainView;
 
 public class ChatRoomController implements Initializable {
 
-	@FXML private Button sendButton;
 	@FXML private Button quitButton;
 	@FXML private TextField messageField;
 	@FXML private TextArea messagesArea;
 	@FXML private Label chatRoomLabel;
-	private ViewSwitch viewSwitch;
 
+	private ViewSwitch viewSwitch;
+	private ChatClient chatClient;
 	private User user;
 	private String username;
 	private String room;
 
-	public ChatRoomController(){
-//		this.username = user.getUsername();
-//		try {
-//			chatRoomClient = new ChatRoomClient();
-//		} catch (IOException | TimeoutException e) {
-//			e.printStackTrace();
-//		}
+	public ChatRoomController() throws IOException, TimeoutException {
+		chatClient = new ChatClient();
 	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+
 		Platform.runLater(() -> {
 			username = getUser().getUsername();
 			chatRoomLabel.setText(getRoom());
-			System.out.println("wtf"+getRoom()+username);
+			System.out.println("Welcome to "+getRoom()+"user "+username); //TODO debug
+			try {
+				String msg = chatClient.receiveMessage();
+				receiveMessage(msg);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		});
 	}
 
-	@FXML private void sendMessage(){
+	@FXML private void sendMessage() throws IOException {
 		String message = username+": "+messageField.getText();
-		messagesArea.appendText(message+"\n");
-		//inviare il messaggio al dispatcher
+		chatClient.sendMessage(message);
 	}
 
 	@FXML private void quitChat(){
@@ -64,6 +66,10 @@ public class ChatRoomController implements Initializable {
 		});
 	}
 
+	public void receiveMessage(String message) throws IOException {
+//		String message = chatClient.receiveMessage();
+		messagesArea.appendText(message+"\n"); //se ha successo il dispatching
+	}
 
 	public void setUser(User user) {
 		this.user = user;

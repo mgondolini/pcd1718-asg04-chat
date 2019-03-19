@@ -6,7 +6,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.Objects;
+import java.util.concurrent.TimeoutException;
 
 public class ClientMain extends Application {
 
@@ -22,8 +24,10 @@ public class ClientMain extends Application {
 		primaryStage.show();
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException, TimeoutException {
 		launch(args);
+		ChatClient chatClient = new ChatClient();
+		chatClient.receiveMessage();
 	}
   
 }

@@ -13,7 +13,7 @@ import static config.RabbitConfig.*;
 public class RoomsManager {
 
 	private static String room;
-	private static ArrayList<String> roomsList = new ArrayList<>(); //da riempire dal db
+	private static ArrayList<String> roomsList = new ArrayList<>();
 	private static DatabaseConnection dbConnection = new DatabaseConnection();
 	private static Document document;
 
@@ -29,6 +29,8 @@ public class RoomsManager {
 		channel.queueDeclare(REQUEST_LIST_QUEUE, false, false, false, null);
 
 		channel.exchangeDeclare(ROOMS_LIST_EXCHANGE, "fanout");
+
+		System.out.println("||||| ROOMS MANAGER |||||");
 
 		roomsList = populateList();
 

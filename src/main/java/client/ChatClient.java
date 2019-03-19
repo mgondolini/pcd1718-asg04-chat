@@ -11,20 +11,20 @@ import static config.RabbitConfig.*;
 
 public class ChatClient {
 
-	private ArrayList<String> rooms;
 
-	private ConnectionFactory factory;
-	private Connection connection;
 	private Channel channel;
-	private String queueListName;
-	Boolean received = false;
+	private ChatRoomController chatRoomController;
+	private String roomsListQueue, dispatchMsgExchange;
+	private ArrayList<String> rooms;
+	private String message;
+	private Boolean received = false;
 
 	public ChatClient() throws IOException, TimeoutException {
 		rooms = new ArrayList<>();
 
-		this.factory = new ConnectionFactory();
-		this.factory.setHost("localhost");
-		this.connection = factory.newConnection();
+		ConnectionFactory factory = new ConnectionFactory();
+		factory.setHost("localhost");
+		Connection connection = factory.newConnection();
 		this.channel = connection.createChannel();
 
 		channel.queueDeclare(ADD_ROOM_QUEUE, false, false, false, null);
@@ -32,12 +32,15 @@ public class ChatClient {
 		channel.queueDeclare(REQUEST_LIST_QUEUE, false, false, false, null);
 
 		channel.exchangeDeclare(ROOMS_LIST_EXCHANGE, "fanout");
-		queueListName = channel.queueDeclare().getQueue();
-		channel.queueBind(queueListName, ROOMS_LIST_EXCHANGE, "");
+		roomsListQueue = channel.queueDeclare().getQueue();
+		channel.queueBind(roomsListQueue, ROOMS_LIST_EXCHANGE, "");
+
+		channel.exchangeDeclare(DISPATCH_MESSAGES_EXCHANGE, "fanout");
+		dispatchMsgExchange = channel.queueDeclare().getQueue();
+		channel.queueBind(dispatchMsgExchange, DISPATCH_MESSAGES_EXCHANGE, "");
 	}
 
 	public ArrayList<String> getRoomsList() throws IOException {
-
 		channel.basicPublish("", REQUEST_LIST_QUEUE, null, null);
 		while (!received) {
 			Consumer roomsListConsumer = new DefaultConsumer(channel) {
@@ -54,8 +57,9 @@ public class ChatClient {
 					received = true;
 				}
 			};
-			channel.basicConsume(queueListName, true, roomsListConsumer);
+			channel.basicConsume(roomsListQueue, true, roomsListConsumer);
 		}
+		received = false;
 		return rooms;
 	}
 
@@ -76,6 +80,34 @@ public class ChatClient {
 			channel.basicPublish("", REMOVE_ROOM_QUEUE, null, room.getBytes("UTF-8"));
 		}
 		return getRoomsList();
+	}
+
+	public void sendMessage(String msg) throws IOException{
+		if(!msg.equals("")){
+			System.out.println("invio msg");
+			channel.basicPublish("", CHAT_MSG_QUEUE, null, msg.getBytes("UTF-8"));
+		}else{
+			System.out.println("cannote send empty msg");
+		}
+	}
+
+	public String receiveMessage() throws IOException{
+		//display dispatched messages
+//		while (!received) {
+			Consumer dispatcherConsumer = new DefaultConsumer(channel) {
+				@Override
+				public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
+						throws IOException {
+					message = new String(body, "UTF-8");
+					System.out.println(message);
+//					received = true;
+				}
+			};
+			channel.basicConsume(dispatchMsgExchange, true, dispatcherConsumer);
+//		}
+//		received = false;
+//		chatRoomController.receiveMessage(message);
+		return message;
 	}
 
 	//sendmsg
