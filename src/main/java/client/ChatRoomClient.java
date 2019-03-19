@@ -40,7 +40,7 @@ public class ChatRoomClient {
 		receiveMessage();
 	}
 
-	public void receiveMessage() throws IOException{
+	private void receiveMessage() throws IOException{
 		Consumer dispatcherConsumer = new DefaultConsumer(channel) {
 			@Override
 			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
@@ -53,7 +53,7 @@ public class ChatRoomClient {
 		channel.basicConsume(dispatchMsgExchange, true, dispatcherConsumer);
 	}
 
-	public void setMessage(String message) {
+	private void setMessage(String message) {
 		this.message = message;
 	}
 

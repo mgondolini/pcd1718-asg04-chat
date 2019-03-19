@@ -71,11 +71,11 @@ public class ChatRoomController implements Initializable {
 		this.room = room;
 	}
 
-	public User getUser() {
+	private User getUser() {
 		return user;
 	}
 
-	public String getRoom() {
+	private String getRoom() {
 		return room;
 	}
 
