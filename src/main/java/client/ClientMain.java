@@ -26,8 +26,8 @@ public class ClientMain extends Application {
 
 	public static void main(String[] args) throws IOException, TimeoutException {
 		launch(args);
-		ChatClient chatClient = new ChatClient();
-		chatClient.receiveMessage();
+//		ChatClient chatClient = new ChatClient();
+//		chatClient.receiveMessage();
 	}
   
 }

@@ -35,23 +35,24 @@ public class ChatRoomController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-
 		Platform.runLater(() -> {
 			username = getUser().getUsername();
 			chatRoomLabel.setText(getRoom());
 			System.out.println("Welcome to "+getRoom()+"user "+username); //TODO debug
+
 			try {
-				String msg = chatClient.receiveMessage();
-				receiveMessage(msg);
+				receiveMessage();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+
 		});
 	}
 
 	@FXML private void sendMessage() throws IOException {
 		String message = username+": "+messageField.getText();
 		chatClient.sendMessage(message);
+		receiveMessage();
 	}
 
 	@FXML private void quitChat(){
@@ -66,9 +67,27 @@ public class ChatRoomController implements Initializable {
 		});
 	}
 
-	public void receiveMessage(String message) throws IOException {
-//		String message = chatClient.receiveMessage();
-		messagesArea.appendText(message+"\n"); //se ha successo il dispatching
+//	public void receiveMessage(String message) throws IOException {
+//		System.out.println(message + "receive");
+//		messagesArea.appendText(message + "\n");
+//	}
+
+	public void receiveMessage() throws IOException {
+		String message = chatClient.receiveMessage();
+		System.out.println(message+"receive");
+		messagesArea.appendText(message + "\n");
+//
+//		Platform.runLater(()-> {
+//			String message = null;
+//			try {
+//				message = chatClient.receiveMessage();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//			System.out.println(message+"receive");
+//			messagesArea.appendText(message + "\n");
+//
+//		}); //se ha successo il dispatching
 	}
 
 	public void setUser(User user) {

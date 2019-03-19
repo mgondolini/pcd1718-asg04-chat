@@ -1,6 +1,7 @@
 package client;
 
 import com.rabbitmq.client.*;
+import javafx.application.Platform;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,17 +12,16 @@ import static config.RabbitConfig.*;
 
 public class ChatClient {
 
-
 	private Channel channel;
 	private ChatRoomController chatRoomController;
 	private String roomsListQueue, dispatchMsgExchange;
 	private ArrayList<String> rooms;
 	private String message;
 	private Boolean received = false;
+	private Boolean received2 = false;
 
 	public ChatClient() throws IOException, TimeoutException {
-		rooms = new ArrayList<>();
-
+		this.rooms = new ArrayList<>();
 		ConnectionFactory factory = new ConnectionFactory();
 		factory.setHost("localhost");
 		Connection connection = factory.newConnection();
@@ -89,26 +89,52 @@ public class ChatClient {
 		}else{
 			System.out.println("cannote send empty msg");
 		}
+		receiveMessage();
 	}
+
+//	public void receiveMessage() throws IOException{
+//		//display dispatched messages
+//		while (!received2) {
+//		Consumer dispatcherConsumer = new DefaultConsumer(channel) {
+//			@Override
+//			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
+//					throws IOException {
+//				String msg = new String(body, "UTF-8");
+//				System.out.println("consumer "+msg);
+//				setMessage(msg);
+//				received2 = true;
+//			}
+//		};
+//		channel.basicConsume(dispatchMsgExchange, true, dispatcherConsumer);
+//		}
+//		chatRoomController.receiveMessage(message);
+//		received2 = false;
+//
+//	}
 
 	public String receiveMessage() throws IOException{
 		//display dispatched messages
-//		while (!received) {
+//		while (!received2) {
 			Consumer dispatcherConsumer = new DefaultConsumer(channel) {
 				@Override
 				public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
 						throws IOException {
-					message = new String(body, "UTF-8");
-					System.out.println(message);
-//					received = true;
+					String msg = new String(body, "UTF-8");
+					System.out.println("consumer "+msg);
+					setMessage(msg);
+					received2 = true;
 				}
 			};
 			channel.basicConsume(dispatchMsgExchange, true, dispatcherConsumer);
 //		}
-//		received = false;
-//		chatRoomController.receiveMessage(message);
+		received2 = false;
 		return message;
 	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
 
 	//sendmsg
 	//Receive msg
