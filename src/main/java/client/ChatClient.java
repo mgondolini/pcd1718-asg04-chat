@@ -13,12 +13,9 @@ import static config.RabbitConfig.*;
 public class ChatClient {
 
 	private Channel channel;
-	private ChatRoomController chatRoomController;
-	private String roomsListQueue, dispatchMsgExchange;
+	private String roomsListQueue;
 	private ArrayList<String> rooms;
-	private String message;
 	private Boolean received = false;
-	private Boolean received2 = false;
 
 	public ChatClient() throws IOException, TimeoutException {
 		this.rooms = new ArrayList<>();
@@ -34,10 +31,6 @@ public class ChatClient {
 		channel.exchangeDeclare(ROOMS_LIST_EXCHANGE, "fanout");
 		roomsListQueue = channel.queueDeclare().getQueue();
 		channel.queueBind(roomsListQueue, ROOMS_LIST_EXCHANGE, "");
-
-		channel.exchangeDeclare(DISPATCH_MESSAGES_EXCHANGE, "fanout");
-		dispatchMsgExchange = channel.queueDeclare().getQueue();
-		channel.queueBind(dispatchMsgExchange, DISPATCH_MESSAGES_EXCHANGE, "");
 	}
 
 	public ArrayList<String> getRoomsList() throws IOException {
@@ -81,62 +74,4 @@ public class ChatClient {
 		}
 		return getRoomsList();
 	}
-
-	public void sendMessage(String msg) throws IOException{
-		if(!msg.equals("")){
-			System.out.println("invio msg");
-			channel.basicPublish("", CHAT_MSG_QUEUE, null, msg.getBytes("UTF-8"));
-		}else{
-			System.out.println("cannote send empty msg");
-		}
-		receiveMessage();
-	}
-
-//	public void receiveMessage() throws IOException{
-//		//display dispatched messages
-//		while (!received2) {
-//		Consumer dispatcherConsumer = new DefaultConsumer(channel) {
-//			@Override
-//			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
-//					throws IOException {
-//				String msg = new String(body, "UTF-8");
-//				System.out.println("consumer "+msg);
-//				setMessage(msg);
-//				received2 = true;
-//			}
-//		};
-//		channel.basicConsume(dispatchMsgExchange, true, dispatcherConsumer);
-//		}
-//		chatRoomController.receiveMessage(message);
-//		received2 = false;
-//
-//	}
-
-	public String receiveMessage() throws IOException{
-		//display dispatched messages
-//		while (!received2) {
-			Consumer dispatcherConsumer = new DefaultConsumer(channel) {
-				@Override
-				public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
-						throws IOException {
-					String msg = new String(body, "UTF-8");
-					System.out.println("consumer "+msg);
-					setMessage(msg);
-					received2 = true;
-				}
-			};
-			channel.basicConsume(dispatchMsgExchange, true, dispatcherConsumer);
-//		}
-		received2 = false;
-		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
-	}
-
-
-	//sendmsg
-	//Receive msg
-
 }

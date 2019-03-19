@@ -24,13 +24,13 @@ public class ChatRoomController implements Initializable {
 	@FXML private Label chatRoomLabel;
 
 	private ViewSwitch viewSwitch;
-	private ChatClient chatClient;
+	private ChatRoomClient chatRoomClient;
 	private User user;
 	private String username;
 	private String room;
 
 	public ChatRoomController() throws IOException, TimeoutException {
-		chatClient = new ChatClient();
+		chatRoomClient = new ChatRoomClient(this);
 	}
 
 	@Override
@@ -38,21 +38,13 @@ public class ChatRoomController implements Initializable {
 		Platform.runLater(() -> {
 			username = getUser().getUsername();
 			chatRoomLabel.setText(getRoom());
-			System.out.println("Welcome to "+getRoom()+"user "+username); //TODO debug
-
-			try {
-				receiveMessage();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
+			System.out.println("Welcome to "+getRoom()+" user "+username); //TODO debug
 		});
 	}
 
 	@FXML private void sendMessage() throws IOException {
 		String message = username+": "+messageField.getText();
-		chatClient.sendMessage(message);
-		receiveMessage();
+		chatRoomClient.sendMessage(message);
 	}
 
 	@FXML private void quitChat(){
@@ -67,27 +59,8 @@ public class ChatRoomController implements Initializable {
 		});
 	}
 
-//	public void receiveMessage(String message) throws IOException {
-//		System.out.println(message + "receive");
-//		messagesArea.appendText(message + "\n");
-//	}
-
-	public void receiveMessage() throws IOException {
-		String message = chatClient.receiveMessage();
-		System.out.println(message+"receive");
+	public void receiveMessage(String message){
 		messagesArea.appendText(message + "\n");
-//
-//		Platform.runLater(()-> {
-//			String message = null;
-//			try {
-//				message = chatClient.receiveMessage();
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-//			System.out.println(message+"receive");
-//			messagesArea.appendText(message + "\n");
-//
-//		}); //se ha successo il dispatching
 	}
 
 	public void setUser(User user) {
