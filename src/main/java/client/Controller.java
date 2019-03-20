@@ -6,9 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
 import java.io.IOException;
 import java.net.URL;
@@ -17,6 +15,7 @@ import java.util.ResourceBundle;
 import java.util.concurrent.TimeoutException;
 
 import static config.ViewConfig.chatRoomView;
+import static javafx.scene.control.Alert.AlertType.NONE;
 
 public class Controller implements Initializable{
 
@@ -59,13 +58,19 @@ public class Controller implements Initializable{
 		Scene scene = enterButton.getScene();
 		ViewSwitch viewSwitch = new ViewSwitch(chatRoomView, scene);
 
-		Platform.runLater(() -> {
-			try {
-				viewSwitch.changeToRoomView(user,selection);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		});
+		if(roomsListView.getSelectionModel().selectedItemProperty().isNull().get()) {
+			showDialog("Select room");
+		}else if(user.getUsername().equals("")){
+			showDialog("Insert username");
+		} else {
+			Platform.runLater(() -> {
+				try {
+					viewSwitch.changeToRoomView(user, selection);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
+		}
 	}
 
 	public void displayRooms(ArrayList<String> chatRooms){
@@ -75,13 +80,19 @@ public class Controller implements Initializable{
 		});
 	}
 
-	public void removeFromList(ArrayList<String> chatRooms){
+	private void showDialog(String text){
+		Alert alert = new Alert(NONE, text, ButtonType.OK);
+		alert.showAndWait();
+	}
+
+	public void removeFromObsList(ArrayList<String> chatRooms){
 		obsList.removeAll(chatRooms);
 	}
 
 	private String getRoomName(){
 		return chatNameField.getText();
 	}
+
 
 
 }

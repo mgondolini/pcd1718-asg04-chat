@@ -4,10 +4,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
 import java.io.IOException;
 import java.net.URL;
@@ -15,6 +12,8 @@ import java.util.ResourceBundle;
 import java.util.concurrent.TimeoutException;
 
 import static config.ViewConfig.mainView;
+import static javafx.scene.control.Alert.AlertType.CONFIRMATION;
+import static javafx.scene.control.Alert.AlertType.ERROR;
 
 public class ChatRoomController implements Initializable {
 
@@ -46,22 +45,32 @@ public class ChatRoomController implements Initializable {
 
 	@FXML private void sendMessage() throws IOException {
 		String message = username+": "+messageField.getText();
-		chatRoomClient.sendMessage(message);
+		if(messageField.getText().equals("")){
+			Alert alert = new Alert(ERROR, "Cannot send an empty message", ButtonType.OK);
+			alert.showAndWait();
+		}else {
+			chatRoomClient.sendMessage(message);
+		}
 	}
 
 	@FXML private void quitChat() throws IOException {
-		String message = username+" left the room.";
-		chatRoomClient.sendMessage(message);
+		Alert alert = new Alert(CONFIRMATION, "Are you sure you want to leave?",  ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
+		alert.showAndWait();
 
-		Scene scene = quitButton.getScene();
-		viewSwitch = new ViewSwitch(mainView, scene);
-		Platform.runLater(()-> {
-			try {
-				viewSwitch.changeView();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		});
+		if (alert.getResult() == ButtonType.YES) {
+			String message = username + " left the room.";
+			chatRoomClient.sendMessage(message);
+
+			Scene scene = quitButton.getScene();
+			viewSwitch = new ViewSwitch(mainView, scene);
+			Platform.runLater(() -> {
+				try {
+					viewSwitch.changeView();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
+		}
 	}
 
 	public void receiveMessage(String message) {
@@ -83,5 +92,6 @@ public class ChatRoomController implements Initializable {
 	private String getRoom() {
 		return room;
 	}
+
 
 }

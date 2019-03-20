@@ -38,11 +38,7 @@ public class ChatRoomClient {
 
 	public void sendMessage(String msg) throws IOException{
 		JSONObject message = new JSONObject().put("message", msg).put("room", room);
-		if(!msg.equals("")){
-			channel.basicPublish("", CHAT_MSG_QUEUE, null, message.toString().getBytes("UTF-8"));
-		}else{
-			System.out.println("cannot send empty msg");
-		}
+		channel.basicPublish("", CHAT_MSG_QUEUE, null, message.toString().getBytes("UTF-8"));
 		receiveMessage();
 	}
 

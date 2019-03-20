@@ -1,7 +1,6 @@
 package client;
 
 import com.rabbitmq.client.*;
-import javafx.application.Platform;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -61,7 +60,7 @@ public class ChatClient {
 
 	public void addRoom(String room) throws IOException
 	{
-		controller.removeFromList(rooms);
+		controller.removeFromObsList(rooms);
 		if(!rooms.contains(room)){
 			rooms.add(room);
 			channel.basicPublish("", ADD_ROOM_QUEUE, null, room.getBytes("UTF-8"));
@@ -71,7 +70,7 @@ public class ChatClient {
 	}
 
 	public void removeRoom(String room) throws IOException {
-		controller.removeFromList(rooms);
+		controller.removeFromObsList(rooms);
 		if(!rooms.contains(room))
 			System.out.println("nome non presente"); //TODO dialog o label
 		else {
