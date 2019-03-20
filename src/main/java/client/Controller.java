@@ -25,59 +25,39 @@ public class Controller implements Initializable{
 	@FXML private TextField chatNameField;
 	@FXML private ListView<String> roomsListView;
 
-	private String roomName;
-	private ViewSwitch viewSwitch;
-	private User user;
 	private ChatClient chatClient;
-	private ObservableList<String> obsList = FXCollections.observableArrayList();
-	private ArrayList<String> chatList;
+	private ObservableList<String> obsList;
 
-	public Controller(){
-		try {
-			this.chatClient = new ChatClient();
-		} catch (IOException | TimeoutException e) {
-			e.printStackTrace();
-		}
+	public Controller() throws IOException, TimeoutException {
+		this.obsList = FXCollections.observableArrayList();
+		this.chatClient = new ChatClient(this);
 	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		//caricare le chatroom nella listview
 		try {
-			chatList = chatClient.getRoomsList();
+			chatClient.getRoomsList();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		obsList.addAll(chatList);
-		roomsListView.setItems(obsList);
 	}
 
 	@FXML private void addRoom() throws IOException {
-		//aggiugere una nuova room nel db
-		roomName = chatNameField.getText();
-		obsList.removeAll(chatList);
-		chatList = chatClient.addRoom(roomName);
-		obsList.addAll(chatList);
-		roomsListView.setItems(obsList);
+		chatClient.addRoom(getRoomName());
 	}
 
 	@FXML private void removeRoom() throws IOException {
-		roomName = chatNameField.getText();
-		//rimuovere la room selezionata dal database
-		obsList.removeAll(chatList);
-		chatList = chatClient.removeRoom(roomName);
-		obsList.addAll(chatList);
-		roomsListView.setItems(obsList);
+		chatClient.removeRoom(getRoomName());
 	}
 
 	@FXML private void enterRoom(){
 		String username = usernameField.getText();
 		String selection = roomsListView.getSelectionModel().getSelectedItem();
 
-		user = new User(username);
+		User user = new User(username);
 
 		Scene scene = enterButton.getScene();
-		viewSwitch = new ViewSwitch(chatRoomView, scene);
+		ViewSwitch viewSwitch = new ViewSwitch(chatRoomView, scene);
 
 		Platform.runLater(() -> {
 			try {
@@ -86,6 +66,21 @@ public class Controller implements Initializable{
 				e.printStackTrace();
 			}
 		});
+	}
+
+	public void displayRooms(ArrayList<String> chatRooms){
+		Platform.runLater(()->{
+			obsList.addAll(chatRooms);
+			roomsListView.setItems(obsList);
+		});
+	}
+
+	public void removeFromList(ArrayList<String> chatRooms){
+		obsList.removeAll(chatRooms);
+	}
+
+	private String getRoomName(){
+		return chatNameField.getText();
 	}
 
 

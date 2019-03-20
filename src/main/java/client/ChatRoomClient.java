@@ -41,7 +41,7 @@ public class ChatRoomClient {
 		if(!msg.equals("")){
 			channel.basicPublish("", CHAT_MSG_QUEUE, null, message.toString().getBytes("UTF-8"));
 		}else{
-			System.out.println("cannote send empty msg");
+			System.out.println("cannot send empty msg");
 		}
 		receiveMessage();
 	}

@@ -29,10 +29,6 @@ public class ChatRoomController implements Initializable {
 	private String username;
 	private String room;
 
-	public ChatRoomController() {
-
-	}
-
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		Platform.runLater(() -> {
@@ -41,6 +37,7 @@ public class ChatRoomController implements Initializable {
 			System.out.println("Welcome to "+getRoom()+"user "+username); //TODO debug
 			try {
 				chatRoomClient = new ChatRoomClient(this, getRoom());
+				chatRoomClient.sendMessage(username+" joined the room.");
 			} catch (IOException | TimeoutException e) {
 				e.printStackTrace();
 			}
@@ -52,7 +49,10 @@ public class ChatRoomController implements Initializable {
 		chatRoomClient.sendMessage(message);
 	}
 
-	@FXML private void quitChat(){
+	@FXML private void quitChat() throws IOException {
+		String message = username+" left the room.";
+		chatRoomClient.sendMessage(message);
+
 		Scene scene = quitButton.getScene();
 		viewSwitch = new ViewSwitch(mainView, scene);
 		Platform.runLater(()-> {

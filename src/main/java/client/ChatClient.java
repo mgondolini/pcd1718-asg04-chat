@@ -13,12 +13,15 @@ import static config.RabbitConfig.*;
 public class ChatClient {
 
 	private Channel channel;
+	private Controller controller;
 	private String roomsListQueue;
 	private ArrayList<String> rooms;
 	private Boolean received = false;
 
-	public ChatClient() throws IOException, TimeoutException {
+	public ChatClient(Controller controller) throws IOException, TimeoutException {
 		this.rooms = new ArrayList<>();
+		this.controller = controller;
+
 		ConnectionFactory factory = new ConnectionFactory();
 		factory.setHost("localhost");
 		Connection connection = factory.newConnection();
@@ -33,7 +36,7 @@ public class ChatClient {
 		channel.queueBind(roomsListQueue, ROOMS_LIST_EXCHANGE, "");
 	}
 
-	public ArrayList<String> getRoomsList() throws IOException {
+	public void getRoomsList() throws IOException {
 		channel.basicPublish("", REQUEST_LIST_QUEUE, null, null);
 		while (!received) {
 			Consumer roomsListConsumer = new DefaultConsumer(channel) {
@@ -45,6 +48,7 @@ public class ChatClient {
 					//TODO controllare se la lista è vuota
 //					if(!roomsReceived.isEmpty())
 						rooms = new ArrayList<>(Arrays.asList(roomsReceived.split(", ")));
+						controller.displayRooms(rooms);
 //					else
 //						rooms.add("bubu");
 					received = true;
@@ -53,25 +57,27 @@ public class ChatClient {
 			channel.basicConsume(roomsListQueue, true, roomsListConsumer);
 		}
 		received = false;
-		return rooms;
 	}
 
-	public ArrayList<String> addRoom(String room) throws IOException {
+	public void addRoom(String room) throws IOException
+	{
+		controller.removeFromList(rooms);
 		if(!rooms.contains(room)){
 			rooms.add(room);
 			channel.basicPublish("", ADD_ROOM_QUEUE, null, room.getBytes("UTF-8"));
 		}
 		else System.out.println("nome già in uso"); //TODO dialog o label
-		return getRoomsList();
+		getRoomsList();
 	}
 
-	public ArrayList<String> removeRoom(String room) throws IOException {
+	public void removeRoom(String room) throws IOException {
+		controller.removeFromList(rooms);
 		if(!rooms.contains(room))
 			System.out.println("nome non presente"); //TODO dialog o label
 		else {
 			rooms.remove(room); // nel db
 			channel.basicPublish("", REMOVE_ROOM_QUEUE, null, room.getBytes("UTF-8"));
 		}
-		return getRoomsList();
+		getRoomsList();
 	}
 }
