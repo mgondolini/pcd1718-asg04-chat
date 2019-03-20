@@ -22,9 +22,8 @@ public class MsgDispatcherService {
 		channel.queueDeclare(CHAT_MSG_QUEUE, false, false, false, null);
 		channel.exchangeDeclare(DISPATCH_MESSAGES, "topic");
 
-		System.out.println(" _-_ MESSAGE DISPATCHER _-_");
+		System.out.println("MESSAGE DISPATCHER");
 
-		//Dispatching chat messages
 		Consumer chatMessageConsumer = new DefaultConsumer(channel) {
 			@Override
 			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
@@ -33,18 +32,17 @@ public class MsgDispatcherService {
 				JSONObject jsonMessage = new JSONObject(msg);
 				String room = jsonMessage.getString("room");
 				String timestampedMsg = getTimestampedMsg(jsonMessage);
-				System.out.println(timestampedMsg+"  "+room); //TODO
+				System.out.println(timestampedMsg+"\t\t"+room); //TODO
 				channel.basicPublish(DISPATCH_MESSAGES, room, null, timestampedMsg.getBytes("UTF-8"));
 			}
 		};
 		channel.basicConsume(CHAT_MSG_QUEUE, true, chatMessageConsumer);
-
 	}
 
 	private static String getTimestampedMsg(JSONObject jsonMessage){
 		String message = jsonMessage.getString("message");
 		String timestamp = new SimpleDateFormat("HH.mm.ss").format(new Date());
-		return message+"\t\t("+timestamp+")";
+		return message+"\t\t\t\t("+timestamp+")";
 	}
 
 }
