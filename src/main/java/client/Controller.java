@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeoutException;
 
@@ -42,11 +43,17 @@ public class Controller implements Initializable{
 	}
 
 	@FXML private void addRoom() throws IOException {
-		chatClient.addRoom(getRoomName());
+		if(chatNameField.getText().isEmpty())
+			showDialog("Empty room field.");
+		else
+		 chatClient.addRoom(getRoomName().get());
 	}
 
 	@FXML private void removeRoom() throws IOException {
-		chatClient.removeRoom(getRoomName());
+		if(chatNameField.getText().isEmpty())
+			showDialog("Empty room field.");
+		else
+			chatClient.removeRoom(getRoomName().get());
 	}
 
 	@FXML private void enterRoom(){
@@ -80,7 +87,7 @@ public class Controller implements Initializable{
 		});
 	}
 
-	private void showDialog(String text){
+	public void showDialog(String text){
 		Alert alert = new Alert(NONE, text, ButtonType.OK);
 		alert.showAndWait();
 	}
@@ -89,10 +96,8 @@ public class Controller implements Initializable{
 		obsList.removeAll(chatRooms);
 	}
 
-	private String getRoomName(){
-		return chatNameField.getText();
+	private Optional<String> getRoomName(){
+		return Optional.of(chatNameField.getText());
 	}
-
-
 
 }

@@ -65,14 +65,14 @@ public class ChatClient {
 			rooms.add(room);
 			channel.basicPublish("", ADD_ROOM_QUEUE, null, room.getBytes("UTF-8"));
 		}
-		else System.out.println("nome già in uso"); //TODO dialog o label
+		else controller.showDialog("Room name already in use"); //TODO dialog o label
 		getRoomsList();
 	}
 
 	public void removeRoom(String room) throws IOException {
 		controller.removeFromObsList(rooms);
 		if(!rooms.contains(room))
-			System.out.println("nome non presente"); //TODO dialog o label
+			controller.showDialog("Room name is empty"); //TODO dialog o label
 		else {
 			rooms.remove(room); // nel db
 			channel.basicPublish("", REMOVE_ROOM_QUEUE, null, room.getBytes("UTF-8"));
