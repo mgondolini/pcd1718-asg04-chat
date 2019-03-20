@@ -1,6 +1,7 @@
 package client;
 
 import com.rabbitmq.client.*;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
@@ -14,8 +15,13 @@ public class ChatRoomClient {
 	private ChatRoomController chatRoomController;
 	private String dispatchMsgExchange;
 	private String message;
+	private String room;
 
 	public ChatRoomClient(ChatRoomController chatRoomController, String room) throws IOException, TimeoutException {
+
+		this.chatRoomController = chatRoomController;
+		this.room = room;
+
 		ConnectionFactory factory = new ConnectionFactory();
 		factory.setHost("localhost");
 		Connection connection = factory.newConnection();
@@ -27,13 +33,13 @@ public class ChatRoomClient {
 		dispatchMsgExchange = channel.queueDeclare().getQueue();
 		channel.queueBind(dispatchMsgExchange, DISPATCH_MESSAGES, room);
 
-		this.chatRoomController = chatRoomController;
 		receiveMessage();
 	}
 
 	public void sendMessage(String msg) throws IOException{
+		JSONObject message = new JSONObject().put("message", msg).put("room", room);
 		if(!msg.equals("")){
-			channel.basicPublish("", CHAT_MSG_QUEUE, null, msg.getBytes("UTF-8"));
+			channel.basicPublish("", CHAT_MSG_QUEUE, null, message.toString().getBytes("UTF-8"));
 		}else{
 			System.out.println("cannote send empty msg");
 		}

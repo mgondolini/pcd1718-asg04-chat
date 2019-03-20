@@ -1,6 +1,7 @@
 package message_dispatcher_service;
 
 import com.rabbitmq.client.*;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -28,16 +29,22 @@ public class MsgDispatcherService {
 			@Override
 			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
 					throws IOException {
-				String message = new String(body, "UTF-8");
-				String timestamp = new SimpleDateFormat("HH.mm.ss").format(new Date());
-				String timestampedMsg = message+"\t\t("+timestamp+")";
-				System.out.println(timestampedMsg);
-				//TODO trovare un modo per passare la ROOM per exchage tipo topic
-				channel.basicPublish(DISPATCH_MESSAGES, "room2", null, timestampedMsg.getBytes("UTF-8"));
+				String msg = new String(body, "UTF-8");
+				JSONObject jsonMessage = new JSONObject(msg);
+				String room = jsonMessage.getString("room");
+				String timestampedMsg = getTimestampedMsg(jsonMessage);
+				System.out.println(timestampedMsg+"  "+room); //TODO
+				channel.basicPublish(DISPATCH_MESSAGES, room, null, timestampedMsg.getBytes("UTF-8"));
 			}
 		};
 		channel.basicConsume(CHAT_MSG_QUEUE, true, chatMessageConsumer);
 
+	}
+
+	private static String getTimestampedMsg(JSONObject jsonMessage){
+		String message = jsonMessage.getString("message");
+		String timestamp = new SimpleDateFormat("HH.mm.ss").format(new Date());
+		return message+"\t\t("+timestamp+")";
 	}
 
 }

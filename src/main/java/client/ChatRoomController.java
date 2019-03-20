@@ -29,7 +29,7 @@ public class ChatRoomController implements Initializable {
 	private String username;
 	private String room;
 
-	public ChatRoomController() throws IOException, TimeoutException {
+	public ChatRoomController() {
 
 	}
 
