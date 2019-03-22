@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="396.0" prefWidth="456.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ChatRoomController">
+<AnchorPane maxHeight="396.0" maxWidth="456.0" minHeight="396.0" minWidth="456.0" prefHeight="396.0" prefWidth="456.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ChatRoomController">
    <children>
       <Label fx:id="chatRoomLabel" layoutX="22.0" layoutY="26.0" prefHeight="31.0" prefWidth="307.0">
          <font>

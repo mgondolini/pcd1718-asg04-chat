@@ -35,11 +35,11 @@ public class Controller implements Initializable{
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		try {
-			chatClient.getRoomsList();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			chatClient.getRoomsList();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 	}
 
 	@FXML private void addRoom() throws IOException {
@@ -82,7 +82,7 @@ public class Controller implements Initializable{
 
 	public void displayRooms(ArrayList<String> chatRooms){
 		Platform.runLater(()->{
-			obsList.addAll(chatRooms);
+			obsList.setAll(chatRooms);
 			roomsListView.setItems(obsList);
 		});
 	}

@@ -33,11 +33,13 @@ public class ChatClient {
 		channel.exchangeDeclare(ROOMS_LIST_EXCHANGE, "fanout");
 		roomsListQueue = channel.queueDeclare().getQueue();
 		channel.queueBind(roomsListQueue, ROOMS_LIST_EXCHANGE, "");
+
+		getRoomsList();
 	}
 
 	public void getRoomsList() throws IOException {
 		channel.basicPublish("", REQUEST_LIST_QUEUE, null, null);
-		while (!received) {
+//		while (!received) {
 			Consumer roomsListConsumer = new DefaultConsumer(channel) {
 				@Override
 				public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
@@ -46,16 +48,17 @@ public class ChatClient {
 					System.out.println("roomsReceived " + roomsReceived);
 					//TODO controllare se la lista è vuota
 //					if(!roomsReceived.isEmpty())
+
 						rooms = new ArrayList<>(Arrays.asList(roomsReceived.split(", ")));
 						controller.displayRooms(rooms);
 //					else
 //						rooms.add("bubu");
-					received = true;
+//					received = true;
 				}
 			};
 			channel.basicConsume(roomsListQueue, true, roomsListConsumer);
-		}
-		received = false;
+//		}
+//		received = false;
 	}
 
 	public void addRoom(String room) throws IOException

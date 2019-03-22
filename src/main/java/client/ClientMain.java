@@ -17,6 +17,7 @@ public class ClientMain extends Application {
 		Scene scene = new Scene(FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml/main_view.fxml"))));
 		primaryStage.setTitle("Chat");
 		primaryStage.setScene(scene);
+		primaryStage.setResizable(false);
 		primaryStage.setOnCloseRequest(e -> {
 			Platform.exit();
 			System.exit(0);

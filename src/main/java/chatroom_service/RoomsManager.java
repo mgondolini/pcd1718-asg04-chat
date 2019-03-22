@@ -39,8 +39,7 @@ public class RoomsManager {
 			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
 					throws IOException {
 				System.out.println("Rooms List: "+roomsList);
-				String usr = new String(body, "UTF-8");
-				channel.basicPublish(ROOMS_LIST_EXCHANGE, usr, null, roomsToString(roomsList).getBytes("UTF-8"));
+				channel.basicPublish(ROOMS_LIST_EXCHANGE, "", null, roomsToString(roomsList).getBytes("UTF-8"));
 			}
 		};
 		channel.basicConsume(REQUEST_LIST_QUEUE, true, roomsListConsumer);
@@ -54,7 +53,7 @@ public class RoomsManager {
 				try {
 					roomsList = addRoom(room, roomsList);
 				} catch (ExecutionException | InterruptedException e) {e.printStackTrace();}
-//					channel.basicPublish("", ROOMS_LIST_EXCHANGE, null, roomsList.toString().getBytes("UTF-8"));
+
 			}
 		};
 		channel.basicConsume(ADD_ROOM_QUEUE, true, addRoomConsumer);
