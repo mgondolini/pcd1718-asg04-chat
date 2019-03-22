@@ -1,24 +1,20 @@
-package chatroom_service;
+package chat_service;
 
 import com.rabbitmq.client.*;
-import org.bson.Document;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 import static config.RabbitConfig.*;
 
-public class ChatManager {
+public class ChatService {
 
 	private static String room;
 	private static ArrayList<String> roomsList = new ArrayList<>();
-	private static DatabaseConnection dbConnection = new DatabaseConnection();
-	private static Document document;
 
 	public static void main(String[] argv) throws Exception {
 
@@ -35,16 +31,17 @@ public class ChatManager {
 		channel.exchangeDeclare(ROOMS_LIST_EXCHANGE, "fanout");
 		channel.exchangeDeclare(DISPATCH_MESSAGES, "topic");
 
-		System.out.println("||||| ROOMS MANAGER |||||");
+		RoomsManager roomsManager = new RoomsManager();
 
-		roomsList = populateList();
+		roomsList = roomsManager.populateList();
 
 		Consumer roomsListConsumer = new DefaultConsumer(channel) {
 			@Override
 			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
 					throws IOException {
 				System.out.println("Rooms List: "+roomsList);
-				channel.basicPublish(ROOMS_LIST_EXCHANGE, "", null, roomsToString(roomsList).getBytes("UTF-8"));
+				String rooms = roomsManager.roomsToString(roomsList);
+				channel.basicPublish(ROOMS_LIST_EXCHANGE, "", null, rooms.getBytes("UTF-8"));
 			}
 		};
 		channel.basicConsume(REQUEST_LIST_QUEUE, true, roomsListConsumer);
@@ -53,12 +50,12 @@ public class ChatManager {
 			@Override
 			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
 					throws IOException {
-				document = new Document("_id",1);
 				room = new String(body, "UTF-8");
 				try {
-					roomsList = addRoom(room, roomsList);
-				} catch (ExecutionException | InterruptedException e) {e.printStackTrace();}
-
+					roomsList = roomsManager.addRoom(room, roomsList);
+				} catch (ExecutionException | InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		};
 		channel.basicConsume(ADD_ROOM_QUEUE, true, addRoomConsumer);
@@ -69,9 +66,10 @@ public class ChatManager {
 					throws IOException {
 				room = new String(body, "UTF-8");
 				try {
-					roomsList = removeRoom(room, roomsList);
-				} catch (ExecutionException | InterruptedException e) {e.printStackTrace();}
-//					channel.basicPublish("", ROOMS_LIST_EXCHANGE, null, roomsList.toString().getBytes("UTF-8"));
+					roomsList = roomsManager.removeRoom(room, roomsList);
+				} catch (ExecutionException | InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		};
 		channel.basicConsume(REMOVE_ROOM_QUEUE, true, removeRoomConsumer);
@@ -94,44 +92,6 @@ public class ChatManager {
 	private static String getTimestampedMsg(JSONObject jsonMessage){
 		String message = jsonMessage.getString("message");
 		String timestamp = new SimpleDateFormat("HH.mm.ss").format(new Date());
-		return message+"\t\t\t\t("+timestamp+")";
+		return message+"\t\t("+timestamp+")";
 	}
-
-	private static ArrayList<String> populateList() throws ExecutionException, InterruptedException {
-		document = new Document("_id",1);
-		String json = dbConnection.getRooms(document);
-		ArrayList<String> rooms = new ArrayList<>(Arrays.asList(json.split(", ")));
-		if(rooms.get(0).equals("")) rooms.remove(0);
-		return rooms;
-	}
-
-	private static ArrayList<String> addRoom(String room, ArrayList<String> roomsList) throws ExecutionException, InterruptedException {
-		if(roomsList.isEmpty()){
-			roomsList.add(room);
-			dbConnection.insert(document.append("rooms", room));
-		}else{
-			roomsList.add(room);
-			String rooms = roomsToString(roomsList);
-			dbConnection.update(document, new Document("rooms", rooms));
-		}
-		System.out.println("Room to add: "+room+"\tRooms: " + roomsList);
-		return roomsList;
-	}
-
-	private static ArrayList<String> removeRoom(String room, ArrayList<String> roomsList) throws ExecutionException, InterruptedException {
-		document = new Document("_id",1);
-		roomsList.remove(room);
-		String rooms = roomsToString(roomsList);
-		dbConnection.update(document, new Document("rooms", rooms));
-		System.out.println("Room to remove: "+room+"\tRooms: " + roomsList);
-		return roomsList;
-	}
-
-	private static String roomsToString(ArrayList<String> roomsList){
-		String rooms = roomsList.toString();
-		rooms = rooms.replace("[", "");
-		rooms = rooms.replace("]","");
-		return rooms;
-	}
-
 }

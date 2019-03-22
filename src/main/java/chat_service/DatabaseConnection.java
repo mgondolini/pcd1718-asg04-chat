@@ -1,4 +1,4 @@
-package chatroom_service;
+package chat_service;
 
 import com.mongodb.async.client.MongoClient;
 import com.mongodb.async.client.MongoClients;
