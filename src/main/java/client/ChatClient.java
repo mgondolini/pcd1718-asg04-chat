@@ -34,31 +34,23 @@ public class ChatClient {
 		roomsListQueue = channel.queueDeclare().getQueue();
 		channel.queueBind(roomsListQueue, ROOMS_LIST_EXCHANGE, "");
 
-		getRoomsList();
+//		getRoomsList();
 	}
 
 	public void getRoomsList() throws IOException {
 		channel.basicPublish("", REQUEST_LIST_QUEUE, null, null);
-//		while (!received) {
-			Consumer roomsListConsumer = new DefaultConsumer(channel) {
-				@Override
-				public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
-						throws IOException {
-					String roomsReceived = new String(body, "UTF-8");
-					System.out.println("roomsReceived " + roomsReceived);
-					//TODO controllare se la lista è vuota
-//					if(!roomsReceived.isEmpty())
-
-						rooms = new ArrayList<>(Arrays.asList(roomsReceived.split(", ")));
-						controller.displayRooms(rooms);
-//					else
-//						rooms.add("bubu");
-//					received = true;
-				}
-			};
-			channel.basicConsume(roomsListQueue, true, roomsListConsumer);
-//		}
-//		received = false;
+		Consumer roomsListConsumer = new DefaultConsumer(channel) {
+			@Override
+			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
+					throws IOException {
+				String roomsReceived = new String(body, "UTF-8");
+				System.out.println("roomsReceived " + roomsReceived);
+				//TODO controllare se la lista è vuota
+				rooms = new ArrayList<>(Arrays.asList(roomsReceived.split(", ")));
+				controller.displayRooms(rooms);
+			}
+		};
+		channel.basicConsume(roomsListQueue, true, roomsListConsumer);
 	}
 
 	public void addRoom(String room) throws IOException

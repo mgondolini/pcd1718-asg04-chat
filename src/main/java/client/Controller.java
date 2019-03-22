@@ -35,18 +35,18 @@ public class Controller implements Initializable{
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-//		try {
-//			chatClient.getRoomsList();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
+		try {
+			chatClient.getRoomsList();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@FXML private void addRoom() throws IOException {
 		if(chatNameField.getText().isEmpty())
 			showDialog("Empty room field.");
 		else
-		 chatClient.addRoom(getRoomName().get());
+			chatClient.addRoom(getRoomName().get());
 	}
 
 	@FXML private void removeRoom() throws IOException {
