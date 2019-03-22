@@ -2,15 +2,18 @@ package chatroom_service;
 
 import com.rabbitmq.client.*;
 import org.bson.Document;
+import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 import static config.RabbitConfig.*;
 
-public class RoomsManager {
+public class ChatManager {
 
 	private static String room;
 	private static ArrayList<String> roomsList = new ArrayList<>();
@@ -27,8 +30,10 @@ public class RoomsManager {
 		channel.queueDeclare(ADD_ROOM_QUEUE, false, false, false, null);
 		channel.queueDeclare(REMOVE_ROOM_QUEUE, false, false, false, null);
 		channel.queueDeclare(REQUEST_LIST_QUEUE, false, false, false, null);
+		channel.queueDeclare(CHAT_MSG_QUEUE, false, false, false, null);
 
 		channel.exchangeDeclare(ROOMS_LIST_EXCHANGE, "fanout");
+		channel.exchangeDeclare(DISPATCH_MESSAGES, "topic");
 
 		System.out.println("||||| ROOMS MANAGER |||||");
 
@@ -70,6 +75,26 @@ public class RoomsManager {
 			}
 		};
 		channel.basicConsume(REMOVE_ROOM_QUEUE, true, removeRoomConsumer);
+
+		Consumer chatMessageConsumer = new DefaultConsumer(channel) {
+			@Override
+			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
+					throws IOException {
+				String msg = new String(body, "UTF-8");
+				JSONObject jsonMessage = new JSONObject(msg);
+				String room = jsonMessage.getString("room");
+				String timestampedMsg = getTimestampedMsg(jsonMessage);
+				System.out.println(timestampedMsg+"\t\t"+room); //TODO
+				channel.basicPublish(DISPATCH_MESSAGES, room, null, timestampedMsg.getBytes("UTF-8"));
+			}
+		};
+		channel.basicConsume(CHAT_MSG_QUEUE, true, chatMessageConsumer);
+	}
+
+	private static String getTimestampedMsg(JSONObject jsonMessage){
+		String message = jsonMessage.getString("message");
+		String timestamp = new SimpleDateFormat("HH.mm.ss").format(new Date());
+		return message+"\t\t\t\t("+timestamp+")";
 	}
 
 	private static ArrayList<String> populateList() throws ExecutionException, InterruptedException {
