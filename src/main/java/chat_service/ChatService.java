@@ -98,18 +98,17 @@ public class ChatService {
 
 		switch (message) {
 			case "enter-cs":
-				System.out.println("enter-cs");
-				channel.basicPublish(DISPATCH_MESSAGES, room, null, "cs-request".getBytes("UTF-8"));
+				if(CSuser.equals("")) {
+					channel.basicPublish(DISPATCH_MESSAGES, room, null, "cs-request".getBytes("UTF-8"));
+					setCSuser(username);
+				}
 				break;
 			case "cs-ok":
-				System.out.println("cs-ok");
 				cs = true;
-				CSuser = "username"; //TODO settare username con quello vero
 				break;
 			case "exit-cs":
-				System.out.println("exit-cs");
 				cs = false;
-				CSuser = "";
+				setCSuser("");
 				break;
 			default:
 				if (cs && CSuser.equals(username)) {
