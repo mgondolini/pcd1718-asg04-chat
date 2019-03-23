@@ -36,8 +36,8 @@ public class ChatRoomClient {
 		receiveMessage();
 	}
 
-	public void sendMessage(String msg) throws IOException{
-		JSONObject message = new JSONObject().put("message", msg).put("room", room);
+	public void sendMessage(String msg, String username) throws IOException{
+		JSONObject message = new JSONObject().put("username", username).put("message", msg).put("room", room);
 		channel.basicPublish("", CHAT_MSG_QUEUE, null, message.toString().getBytes("UTF-8"));
 		receiveMessage();
 	}
@@ -48,8 +48,14 @@ public class ChatRoomClient {
 			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
 					throws IOException {
 				String msg = new String(body, "UTF-8");
-				setMessage(msg);
-				chatRoomController.receiveMessage(message);
+				if(msg.equals("cs-request")){
+					System.out.println("cs-request");
+					JSONObject message = new JSONObject().put("username", "").put("message", "cs-ok").put("room", room);
+					channel.basicPublish("", CHAT_MSG_QUEUE, null, message.toString().getBytes("UTF-8"));
+				}else {
+					setMessage(msg);
+					chatRoomController.receiveMessage(message);
+				}
 			}
 		};
 		channel.basicConsume(dispatchMsgExchange, true, dispatcherConsumer);

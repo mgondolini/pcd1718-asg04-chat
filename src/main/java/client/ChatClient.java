@@ -15,7 +15,6 @@ public class ChatClient {
 	private Controller controller;
 	private String roomsListQueue;
 	private ArrayList<String> rooms;
-	private Boolean received = false;
 
 	public ChatClient(Controller controller) throws IOException, TimeoutException {
 		this.rooms = new ArrayList<>();
@@ -33,8 +32,6 @@ public class ChatClient {
 		channel.exchangeDeclare(ROOMS_LIST_EXCHANGE, "fanout");
 		roomsListQueue = channel.queueDeclare().getQueue();
 		channel.queueBind(roomsListQueue, ROOMS_LIST_EXCHANGE, "");
-
-//		getRoomsList();
 	}
 
 	public void getRoomsList() throws IOException {
@@ -60,16 +57,16 @@ public class ChatClient {
 			rooms.add(room);
 			channel.basicPublish("", ADD_ROOM_QUEUE, null, room.getBytes("UTF-8"));
 		}
-		else controller.showDialog("Room name already in use"); //TODO dialog o label
+		else controller.showDialog("Room name already in use");
 		getRoomsList();
 	}
 
 	public void removeRoom(String room) throws IOException {
 		controller.removeFromObsList(rooms);
 		if(!rooms.contains(room))
-			controller.showDialog("Room name is empty"); //TODO dialog o label
+			controller.showDialog("Room name is empty");
 		else {
-			rooms.remove(room); // nel db
+			rooms.remove(room);
 			channel.basicPublish("", REMOVE_ROOM_QUEUE, null, room.getBytes("UTF-8"));
 		}
 		getRoomsList();

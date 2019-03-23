@@ -36,7 +36,7 @@ public class ChatRoomController implements Initializable {
 			System.out.println("Welcome to "+getRoom()+"user "+username); //TODO debug
 			try {
 				chatRoomClient = new ChatRoomClient(this, getRoom());
-				chatRoomClient.sendMessage(username+" joined the room.");
+				chatRoomClient.sendMessage(" joined the room.", username);
 			} catch (IOException | TimeoutException e) {
 				e.printStackTrace();
 			}
@@ -44,12 +44,13 @@ public class ChatRoomController implements Initializable {
 	}
 
 	@FXML private void sendMessage() throws IOException {
-		String message = username+": "+messageField.getText();
+		String message = messageField.getText();
 		if(messageField.getText().equals("")){
 			Alert alert = new Alert(ERROR, "Cannot send an empty message", ButtonType.OK);
 			alert.showAndWait();
 		}else {
-			chatRoomClient.sendMessage(message);
+			chatRoomClient.sendMessage(message, username);
+			messageField.clear();
 		}
 	}
 
@@ -58,8 +59,8 @@ public class ChatRoomController implements Initializable {
 		alert.showAndWait();
 
 		if (alert.getResult() == ButtonType.YES) {
-			String message = username + " left the room.";
-			chatRoomClient.sendMessage(message);
+			String message = " left the room.";
+			chatRoomClient.sendMessage(message, username);
 
 			Scene scene = quitButton.getScene();
 			viewSwitch = new ViewSwitch(mainView, scene);

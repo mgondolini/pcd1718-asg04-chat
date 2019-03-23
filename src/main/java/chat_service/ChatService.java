@@ -15,6 +15,8 @@ public class ChatService {
 
 	private static String room;
 	private static ArrayList<String> roomsList = new ArrayList<>();
+	private static boolean cs = false;
+	private static String CSuser = "";
 
 	public static void main(String[] argv) throws Exception {
 
@@ -80,18 +82,51 @@ public class ChatService {
 					throws IOException {
 				String msg = new String(body, "UTF-8");
 				JSONObject jsonMessage = new JSONObject(msg);
-				String room = jsonMessage.getString("room");
-				String timestampedMsg = getTimestampedMsg(jsonMessage);
-				System.out.println(timestampedMsg+"\t\t"+room); //TODO
-				channel.basicPublish(DISPATCH_MESSAGES, room, null, timestampedMsg.getBytes("UTF-8"));
+				dispatchMessages(jsonMessage, channel);
+
 			}
 		};
 		channel.basicConsume(CHAT_MSG_QUEUE, true, chatMessageConsumer);
 	}
 
-	private static String getTimestampedMsg(JSONObject jsonMessage){
+	private static void dispatchMessages(JSONObject jsonMessage, Channel channel) throws IOException {
+
 		String message = jsonMessage.getString("message");
+		String username = jsonMessage.getString("username");
+		String room = jsonMessage.getString("room");
+		String timestampedMsg = getTimestampedMsg(username,message);
+
+		switch (message) {
+			case "enter-cs":
+				System.out.println("enter-cs");
+				channel.basicPublish(DISPATCH_MESSAGES, room, null, "cs-request".getBytes("UTF-8"));
+				break;
+			case "cs-ok":
+				System.out.println("cs-ok");
+				cs = true;
+				CSuser = "username"; //TODO settare username con quello vero
+				break;
+			case "exit-cs":
+				System.out.println("exit-cs");
+				cs = false;
+				CSuser = "";
+				break;
+			default:
+				if (cs && CSuser.equals(username)) {
+					channel.basicPublish(DISPATCH_MESSAGES, room, null, timestampedMsg.getBytes("UTF-8"));
+				} else if (CSuser.equals("") && !cs) {
+					channel.basicPublish(DISPATCH_MESSAGES, room, null, timestampedMsg.getBytes("UTF-8"));
+				}
+				break;
+		}
+	}
+
+	private static String getTimestampedMsg(String username, String message){
 		String timestamp = new SimpleDateFormat("HH.mm.ss").format(new Date());
-		return message+"\t\t("+timestamp+")";
+		return username+": "+message+"\t\t("+timestamp+")";
+	}
+
+	private static void setCSuser(String username){
+		CSuser = username;
 	}
 }
