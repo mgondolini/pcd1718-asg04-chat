@@ -20,6 +20,7 @@ public class ChatService {
 	private static ArrayList<String> roomsList = new ArrayList<>();
 	private static boolean cs = false;
 	private static String CSuser = "";
+	private static int count = 0;
 
 	public static void main(String[] argv) throws Exception {
 
@@ -98,6 +99,7 @@ public class ChatService {
 		String message = jsonMessage.getString(MESSAGE);
 		String room = jsonMessage.getString(ROOM);
 		String timestampedMsg = getTimestampedMsg(username,message);
+		String infoMessage= "";
 
 		switch (message) {
 			case CSenter:
@@ -108,10 +110,18 @@ public class ChatService {
 				break;
 			case CSaccepted:
 				cs = true;
+				infoMessage ="\n***** " + CSuser + " entered the critical section *****";
+				if(count<1){
+					channel.basicPublish(DISPATCH_MESSAGES, room, null, infoMessage.getBytes("UTF-8"));
+				}
+				count++;
 				break;
 			case CSexit:
 				cs = false;
+				infoMessage = "***** " + CSuser + " left the critical section *****\n";
 				setCSuser("");
+				channel.basicPublish(DISPATCH_MESSAGES, room, null, infoMessage.getBytes("UTF-8"));
+				count = 0;
 				break;
 			default:
 				if (cs && CSuser.equals(username)) {
