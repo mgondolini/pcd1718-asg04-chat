@@ -11,6 +11,9 @@ import java.util.concurrent.ExecutionException;
 
 import static config.RabbitConfig.*;
 
+/**
+ * @author Monica Gondolini
+ */
 public class ChatService {
 
 	private static String room;
@@ -91,22 +94,22 @@ public class ChatService {
 
 	private static void dispatchMessages(JSONObject jsonMessage, Channel channel) throws IOException {
 
-		String message = jsonMessage.getString("message");
-		String username = jsonMessage.getString("username");
-		String room = jsonMessage.getString("room");
+		String username = jsonMessage.getString(USERNAME);
+		String message = jsonMessage.getString(MESSAGE);
+		String room = jsonMessage.getString(ROOM);
 		String timestampedMsg = getTimestampedMsg(username,message);
 
 		switch (message) {
-			case "enter-cs":
+			case CSenter:
 				if(CSuser.equals("")) {
-					channel.basicPublish(DISPATCH_MESSAGES, room, null, "cs-request".getBytes("UTF-8"));
+					channel.basicPublish(DISPATCH_MESSAGES, room, null, CSrequest.getBytes("UTF-8"));
 					setCSuser(username);
 				}
 				break;
-			case "cs-ok":
+			case CSaccepted:
 				cs = true;
 				break;
-			case "exit-cs":
+			case CSexit:
 				cs = false;
 				setCSuser("");
 				break;

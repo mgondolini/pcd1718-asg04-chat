@@ -15,6 +15,9 @@ import static config.ViewConfig.mainView;
 import static javafx.scene.control.Alert.AlertType.CONFIRMATION;
 import static javafx.scene.control.Alert.AlertType.ERROR;
 
+/**
+ * @author Monica Gondolini
+ */
 public class ChatRoomController implements Initializable {
 
 	@FXML private Button quitButton;
@@ -33,7 +36,6 @@ public class ChatRoomController implements Initializable {
 		Platform.runLater(() -> {
 			username = getUser().getUsername();
 			chatRoomLabel.setText(getRoom());
-			System.out.println("Welcome to "+getRoom()+"user "+username); //TODO debug
 			try {
 				chatRoomClient = new ChatRoomClient(this, getRoom());
 				chatRoomClient.sendMessage(" joined the room.", username);

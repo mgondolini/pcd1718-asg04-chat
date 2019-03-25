@@ -10,12 +10,12 @@ import org.bson.Document;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import static config.DBconfig.*;
 
+/**
+ * @author Monica Gondolini
+ */
 public class DatabaseConnection {
-
-	private final static String uri = "mongodb://admin:chatmq17@ds247191.mlab.com:47191/chatmq";
-	private final static String dbName = "chatmq";
-	private final static String roomsCollection = "Rooms";
 
 	private MongoClient mongoClient;
 	private MongoDatabase database;
@@ -31,9 +31,7 @@ public class DatabaseConnection {
 		collection.insertOne(document, (result, t) -> System.out.println("Inserted!"));
 	}
 
-	//Controllare a Forlì
 	public UpdateResult update(Document document, Document update) throws ExecutionException, InterruptedException {
-		//ritornare una future?
 		CompletableFuture<UpdateResult> future = new CompletableFuture<>();
 		collection.updateOne(document, new Document("$set",update), (result, t) -> {
 			if(result != null) future.complete(result);

@@ -7,6 +7,9 @@ import javafx.scene.layout.AnchorPane;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * @author Monica Gondolini
+ */
 class ViewSwitch {
 
 	private String view;

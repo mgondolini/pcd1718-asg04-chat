@@ -18,6 +18,9 @@ import java.util.concurrent.TimeoutException;
 import static config.ViewConfig.chatRoomView;
 import static javafx.scene.control.Alert.AlertType.NONE;
 
+/**
+ * @author Monica Gondolini
+ */
 public class Controller implements Initializable{
 
 	@FXML private Button enterButton;

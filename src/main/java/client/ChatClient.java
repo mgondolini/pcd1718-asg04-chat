@@ -9,6 +9,9 @@ import java.util.concurrent.TimeoutException;
 
 import static config.RabbitConfig.*;
 
+/**
+ * @author Monica Gondolini
+ */
 public class ChatClient {
 
 	private Channel channel;
@@ -50,8 +53,7 @@ public class ChatClient {
 		channel.basicConsume(roomsListQueue, true, roomsListConsumer);
 	}
 
-	public void addRoom(String room) throws IOException
-	{
+	public void addRoom(String room) throws IOException {
 		controller.removeFromObsList(rooms);
 		if(!rooms.contains(room)){
 			rooms.add(room);

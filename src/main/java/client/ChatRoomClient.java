@@ -6,9 +6,11 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
-import static config.RabbitConfig.CHAT_MSG_QUEUE;
-import static config.RabbitConfig.DISPATCH_MESSAGES;
+import static config.RabbitConfig.*;
 
+/**
+ * @author Monica Gondolini
+ */
 public class ChatRoomClient {
 
 	private Channel channel;
@@ -37,7 +39,7 @@ public class ChatRoomClient {
 	}
 
 	public void sendMessage(String msg, String username) throws IOException{
-		JSONObject message = new JSONObject().put("username", username).put("message", msg).put("room", room);
+		JSONObject message = new JSONObject().put(USERNAME, username).put(MESSAGE, msg).put(ROOM, room);
 		channel.basicPublish("", CHAT_MSG_QUEUE, null, message.toString().getBytes("UTF-8"));
 		receiveMessage();
 	}
@@ -48,9 +50,9 @@ public class ChatRoomClient {
 			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
 					throws IOException {
 				String msg = new String(body, "UTF-8");
-				if(msg.equals("cs-request")){
-					System.out.println("cs-request");
-					JSONObject message = new JSONObject().put("username", "").put("message", "cs-ok").put("room", room);
+				if(msg.equals(CSrequest)){
+					System.out.println(CSrequest);
+					JSONObject message = new JSONObject().put(USERNAME, "").put(MESSAGE, CSaccepted).put(ROOM, room);
 					channel.basicPublish("", CHAT_MSG_QUEUE, null, message.toString().getBytes("UTF-8"));
 				}else {
 					setMessage(msg);
