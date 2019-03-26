@@ -99,7 +99,7 @@ public class ChatService {
 		String message = jsonMessage.getString(MESSAGE);
 		String room = jsonMessage.getString(ROOM);
 		String timestampedMsg = getTimestampedMsg(username,message);
-		String infoMessage= "";
+		String infoMessage;
 
 		switch (message) {
 			case CSenter:
