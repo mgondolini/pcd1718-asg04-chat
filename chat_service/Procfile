@@ -1,4 +1,0 @@
-
- web: java -jar build/libs/chat_service-1.0-SNAPSHOT.jar
-
-
