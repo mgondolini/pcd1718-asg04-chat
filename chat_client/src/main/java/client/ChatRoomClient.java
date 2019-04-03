@@ -51,7 +51,6 @@ public class ChatRoomClient {
 					throws IOException {
 				String msg = new String(body, "UTF-8");
 				if(msg.equals(CSrequest)){
-					System.out.println(CSrequest);
 					JSONObject message = new JSONObject().put(USERNAME, "").put(MESSAGE, CSaccepted).put(ROOM, room);
 					channel.basicPublish("", CHAT_MSG_QUEUE, null, message.toString().getBytes("UTF-8"));
 				}else {

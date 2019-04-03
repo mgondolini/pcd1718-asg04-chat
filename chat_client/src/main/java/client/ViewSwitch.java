@@ -29,7 +29,6 @@ class ViewSwitch {
 		FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(view));
 		AnchorPane anchorPane = loader.load();
 		ChatRoomController controller = loader.getController();
-		System.out.println("controller"+controller);
 		controller.setRoom(room);
 		controller.setUser(user);
 		scene.setRoot(anchorPane);
