@@ -24,3 +24,15 @@ dependencies {
     //JSON-java
     compile group: 'org.json', name: 'json', version: '20180813'
 }
+
+task stage(dependsOn: ['build', 'clean'])
+build.mustRunAfter clean
+
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'chat_service.ChatService'
+        )
+    }
+}

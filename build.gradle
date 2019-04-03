@@ -22,7 +22,6 @@ dependencies {
     compile 'org.mongodb:mongodb-driver-async:3.0.4'
 
     // RabbitMQ
-
     compile group: 'com.rabbitmq', name: 'amqp-client', version: '5.2.0'
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
 
