@@ -11,7 +11,6 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/chat_client" />
             <option value="$PROJECT_DIR$/chat_service" />
-            <option value="$PROJECT_DIR$/src" />
           </set>
         </option>
       </GradleProjectSettings>
@@ -23,7 +22,6 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/chat_client" />
             <option value="$PROJECT_DIR$/chat_service" />
-            <option value="$PROJECT_DIR$/src" />
           </set>
         </option>
       </GradleProjectSettings>

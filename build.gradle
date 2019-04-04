@@ -8,6 +8,7 @@ repositories {
 }
 
 sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
@@ -22,7 +23,8 @@ dependencies {
     compile 'org.mongodb:mongodb-driver-async:3.0.4'
 
     // RabbitMQ
-    compile group: 'com.rabbitmq', name: 'amqp-client', version: '5.6.0'
+    runtime "org.slf4j:slf4j-simple:1.7.25"
+    compile group: 'com.rabbitmq', name: 'amqp-client', version: '5.2.0'
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
 
 
