@@ -1,1 +1,1 @@
- web: java -jar chat_service/build/libs/chat_service-1.0-SNAPSHOT.jar
+ web: java -jar chat_service/build/libs/chat_service-1.0.jar
