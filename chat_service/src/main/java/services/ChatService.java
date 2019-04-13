@@ -113,7 +113,7 @@ public class ChatService {
 				break;
 			case CSaccepted:
 				cs = true;
-				infoMessage ="\n***** " + CSuser + " entered the critical section *****";
+				infoMessage ="\n**********  " + CSuser + " critical section **********";
 				if(count<1){
 					channel.basicPublish(DISPATCH_MESSAGES, room, null, infoMessage.getBytes("UTF-8"));
 				}
@@ -121,7 +121,7 @@ public class ChatService {
 				break;
 			case CSexit:
 				cs = false;
-				infoMessage = "***** " + CSuser + " left the critical section *****\n";
+				infoMessage = "********** critical section end **********\n";
 				setCSuser("");
 				channel.basicPublish(DISPATCH_MESSAGES, room, null, infoMessage.getBytes("UTF-8"));
 				count = 0;
