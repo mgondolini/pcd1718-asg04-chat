@@ -50,7 +50,7 @@ public class ChatRoomController implements Initializable {
 
 	@FXML private void sendMessage() throws IOException {
 		String message = messageField.getText();
-		if(messageField.getText().equals("")){
+		if(message.equals("")){
 			Alert alert = new Alert(ERROR, "Cannot send an empty message", ButtonType.OK);
 			alert.showAndWait();
 		}else {
