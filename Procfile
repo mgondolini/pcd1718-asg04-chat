@@ -1,1 +1,1 @@
- web: java $JAVA_OPTS -Dserver.port=$PORT -jar chat_service/build/libs/chat_service-1.0.jar
+ web: java -Dserver.port=$PORT $JAVA_OPTS -jar chat_service/build/libs/chat_service-1.0.jar
