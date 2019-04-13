@@ -3,9 +3,11 @@ package config;
 
 public class RabbitConfig {
 
+	//CONNECTION
 	public final static String host = "fox.rmq.cloudamqp.com";
-	public final static String amqp_username = "dytjujcm:dytjujcm";
-	public final static String amqp_password = "e6rQGUTU-6Psc9cf8fBR1Miypb2t7qBi";
+	public final static String mqtt_username = "dytjujcm";
+	public final static String mqtt_password = "e6rQGUTU-6Psc9cf8fBR1Miypb2t7qBi";
+	public final static String virtual_host = "dytjujcm";
 	public final static int port = 1883;
 
 	public final static String CSenter = "enter-cs";

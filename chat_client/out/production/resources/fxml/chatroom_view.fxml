@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="396.0" maxWidth="456.0" minHeight="396.0" minWidth="456.0" prefHeight="396.0" prefWidth="456.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ChatRoomController">
+   <children>
+      <Label fx:id="chatRoomLabel" layoutX="22.0" layoutY="26.0" prefHeight="31.0" prefWidth="307.0">
+         <font>
+            <Font name="System Italic" size="18.0" />
+         </font></Label>
+      <TextArea fx:id="messagesArea" editable="false" layoutX="14.0" layoutY="71.0" prefHeight="260.0" prefWidth="425.0" />
+      <TextField fx:id="messageField" layoutX="22.0" layoutY="345.0" prefHeight="31.0" prefWidth="320.0" />
+      <Button fx:id="sendButton" layoutX="353.0" layoutY="345.0" mnemonicParsing="false" onAction="#sendMessage" prefHeight="31.0" prefWidth="86.0" text="Send" />
+      <Button fx:id="quitButton" layoutX="364.0" layoutY="24.0" mnemonicParsing="false" onAction="#quitChat" prefHeight="31.0" prefWidth="71.0" text="Quit" />
+   </children>
+</AnchorPane>

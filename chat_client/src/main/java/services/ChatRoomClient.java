@@ -26,10 +26,10 @@ public class ChatRoomClient {
 		this.room = room;
 
 		ConnectionFactory factory = new ConnectionFactory();
-		factory.setUsername(amqp_username);
-		factory.setPassword(amqp_password);
+		factory.setUsername(mqtt_username);
+		factory.setPassword(mqtt_password);
 		factory.setHost(host);
-		factory.setPort(port);
+		factory.setVirtualHost(virtual_host);
 		Connection connection = factory.newConnection();
 		this.channel = connection.createChannel();
 
