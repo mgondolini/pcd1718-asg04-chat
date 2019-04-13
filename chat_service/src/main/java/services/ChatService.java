@@ -25,7 +25,10 @@ public class ChatService {
 	public static void main(String[] argv) throws Exception {
 
 		ConnectionFactory factory = new ConnectionFactory();
+		factory.setUsername(amqp_username);
+		factory.setPassword(amqp_password);
 		factory.setHost(host);
+		factory.setPort(port);
 		Connection connection = factory.newConnection();
 		Channel channel = connection.createChannel();
 
