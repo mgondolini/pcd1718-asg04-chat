@@ -3,7 +3,7 @@ package config;
 
 public class RabbitConfig {
 
-	public final static String localhost = "localhost";
+	public final static String host = "amqp://dytjujcm:e6rQGUTU-6Psc9cf8fBR1Miypb2t7qBi@fox.rmq.cloudamqp.com/dytjujcm";
 	public final static String CSenter = "enter-cs";
 	public final static String CSrequest = "cs-request";
 	public final static String CSaccepted = "cs-accepted";

@@ -25,7 +25,7 @@ public class ChatClient {
 		this.controller = controller;
 
 		ConnectionFactory factory = new ConnectionFactory();
-		factory.setHost("localhost");
+		factory.setHost(host);
 		Connection connection = factory.newConnection();
 		this.channel = connection.createChannel();
 
