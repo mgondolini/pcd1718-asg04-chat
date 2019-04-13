@@ -29,7 +29,6 @@ public class ChatService {
 		factory.setPassword(mqtt_password);
 		factory.setHost(host);
 		factory.setVirtualHost(virtual_host);
-//		factory.setUri("amqp://dytjujcm:e6rQGUTU-6Psc9cf8fBR1Miypb2t7qBi@fox.rmq.cloudamqp.com:8883/dytjujcm");
 		Connection connection = factory.newConnection();
 		Channel channel = connection.createChannel();
 
