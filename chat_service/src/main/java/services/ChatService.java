@@ -90,7 +90,6 @@ public class ChatService {
 				String msg = new String(body, "UTF-8");
 				JSONObject jsonMessage = new JSONObject(msg);
 				dispatchMessages(jsonMessage, channel);
-
 			}
 		};
 		channel.basicConsume(CHAT_MSG_QUEUE, true, chatMessageConsumer);
@@ -102,7 +101,7 @@ public class ChatService {
 		String message = jsonMessage.getString(MESSAGE);
 		String room = jsonMessage.getString(ROOM);
 		String timestampedMsg = getTimestampedMsg(username,message);
-		String infoMessage= "";
+		String infoMessage;
 
 		switch (message) {
 			case CSenter:
@@ -113,7 +112,7 @@ public class ChatService {
 				break;
 			case CSaccepted:
 				cs = true;
-				infoMessage ="\n**********  " + CSuser + " critical section **********";
+				infoMessage = "\n**********  " + CSuser + " critical section **********";
 				if(count<1){
 					channel.basicPublish(DISPATCH_MESSAGES, room, null, infoMessage.getBytes("UTF-8"));
 				}

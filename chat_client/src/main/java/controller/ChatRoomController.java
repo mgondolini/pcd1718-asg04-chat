@@ -36,6 +36,7 @@ public class ChatRoomController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		displayMessage("cs commands: enter-cs, exit-cs");
 		Platform.runLater(() -> {
 			username = getUser().getUsername();
 			chatRoomLabel.setText(getRoom());
@@ -79,7 +80,7 @@ public class ChatRoomController implements Initializable {
 		}
 	}
 
-	public void receiveMessage(String message) {
+	public void displayMessage(String message) {
 		messagesArea.appendText(message + "\n");
 	}
 

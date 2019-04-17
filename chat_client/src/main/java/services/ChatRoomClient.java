@@ -59,7 +59,7 @@ public class ChatRoomClient {
 					channel.basicPublish("", CHAT_MSG_QUEUE, null, message.toString().getBytes("UTF-8"));
 				}else {
 					setMessage(msg);
-					chatRoomController.receiveMessage(message);
+					chatRoomController.displayMessage(message);
 				}
 			}
 		};

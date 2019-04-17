@@ -20,7 +20,7 @@ public class RabbitConfig {
 	public final static String ROOMS_LIST_EXCHANGE = "rooms_list_exchange";
 	public final static String DISPATCH_MESSAGES = "dispatch_messages";
 
-	//OTHERS
+	//OTHER
 	public final static String CSenter = "enter-cs";
 	public final static String CSrequest = "cs-request";
 	public final static String CSaccepted = "cs-accepted";
