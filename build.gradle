@@ -1,3 +1,4 @@
+group 'pcd1718-asg04-chat'
 version '1.0'
 
 apply plugin: 'java'

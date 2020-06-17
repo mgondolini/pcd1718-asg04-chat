@@ -1,4 +1,4 @@
 rootProject.name = 'pcd1718-asg04-chat'
-include 'chat_service'
+include 'chat_service' 
 include 'chat_client'
 
