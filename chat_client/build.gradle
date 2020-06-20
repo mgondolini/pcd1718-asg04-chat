@@ -1,8 +1,8 @@
 
-plugins {
-    id 'application'
-    id 'org.openjfx.javafxplugin' version '0.0.8'
-}
+//plugins {
+//    id 'application'
+//    id 'org.openjfx.javafxplugin' version '0.0.8'
+//}
 version '1.0'
 
 apply plugin: 'java'
@@ -15,11 +15,11 @@ repositories {
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-javafx {
-    version = "11"
-    modules = ['javafx.controls', 'javafx.fxml']
-    mainClassName = 'client.ClientMain'
-}
+//javafx {
+//    version = "11"
+//    modules = ['javafx.controls', 'javafx.fxml']
+//    mainClassName = 'client.ClientMain'
+//}
 
 
 dependencies {
