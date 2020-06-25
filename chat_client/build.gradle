@@ -20,7 +20,7 @@ targetCompatibility = 1.8
 //    modules = ['javafx.controls', 'javafx.fxml']
 //}
 
-mainClassName = 'client.ClientMain'
+//mainClassName = 'client.ClientMain'
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
