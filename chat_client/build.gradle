@@ -16,11 +16,10 @@ repositories {
 //targetCompatibility = 1.8
 
 javafx {
-    version = "11"
+    version = "11.0.2"
     modules = ['javafx.controls', 'javafx.fxml']
-    mainClassName = 'client.ClientMain'
 }
-
+mainClassName = 'client.ClientMain'
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
