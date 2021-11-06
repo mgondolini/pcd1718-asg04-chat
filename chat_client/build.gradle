@@ -1,11 +1,11 @@
 
-//plugins {
-//    id 'application'
-//    id 'org.openjfx.javafxplugin' version '0.0.8'
-//}
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.8'
+}
 version '1.0'
 
-apply plugin: 'java'
 
 repositories {
     mavenCentral()
@@ -15,12 +15,12 @@ repositories {
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-//javafx {
-//    version = "11.0.2"
-//    modules = ['javafx.controls', 'javafx.fxml']
-//}
+javafx {
+    version = "11.0.2"
+    modules = ['javafx.controls', 'javafx.fxml']
+}
 
-//mainClassName = 'client.ClientMain'
+mainClassName = 'client.ClientMain'
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
