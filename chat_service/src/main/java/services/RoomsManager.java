@@ -18,7 +18,7 @@ public class RoomsManager {
 	private Document document;
 
 	public RoomsManager(){
-		document = new Document(ID,1);
+		document = new Document("foo","foo");
 	}
 
 	public ArrayList<String> populateList() throws ExecutionException, InterruptedException {
