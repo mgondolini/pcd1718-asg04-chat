@@ -115,7 +115,7 @@ public class DatabaseConnection {
 
 			@Override
 			public void onComplete() {
-				future.complete(result.get("rooms").toString());
+				future.complete(result.get("Rooms").toString());
 			}
 		});
 
