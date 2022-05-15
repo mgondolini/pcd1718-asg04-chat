@@ -25,10 +25,12 @@ public class ChatService {
 	public static void main(String[] argv) throws Exception {
 
 		ConnectionFactory factory = new ConnectionFactory();
-		factory.setUsername(mqtt_username);
-		factory.setPassword(mqtt_password);
-		factory.setHost(host);
-		factory.setVirtualHost(virtual_host);
+//		factory.setUsername(mqtt_username);
+//		factory.setPassword(mqtt_password);
+//		factory.setHost(host);
+//		factory.setVirtualHost(virtual_host);
+//		factory.setPort(port);
+		factory.setUri("amqps://bsgrnlea:fHulCVGdiH83swYGtCfbl608sLaP1YR2@rat.rmq2.cloudamqp.com/bsgrnlea");
 		Connection connection = factory.newConnection();
 		Channel channel = connection.createChannel();
 
@@ -126,9 +128,9 @@ public class ChatService {
 				count = 0;
 				break;
 			default:
-				if (cs && CSuser.equals(username)) {
+				if (cs && CSuser.equals(username)) { // sono in cs
 					channel.basicPublish(DISPATCH_MESSAGES, room, null, timestampedMsg.getBytes("UTF-8"));
-				} else if (CSuser.equals("") && !cs) {
+				} else if (CSuser.equals("") && !cs) { //nessuno in cs
 					channel.basicPublish(DISPATCH_MESSAGES, room, null, timestampedMsg.getBytes("UTF-8"));
 				}
 				break;

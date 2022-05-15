@@ -4,10 +4,10 @@ package config;
 public class RabbitConfig {
 
 	//CONNECTION
-	public final static String host = "poodle.rmq2.cloudamqp.com";
-	public final static String mqtt_username = "uipdjarb";
-	public final static String mqtt_password = "0QvA3_O9uGhOHaLYtd7qiuXXIBpzUjO8";
-	public final static String virtual_host = "uipdjarb";
+	public final static String host = "rat.rmq2.cloudamqp.com";//"poodle.rmq2.cloudamqp.com";
+	public final static String mqtt_username = "bsgrnlea " ;//"uipdjarb";
+	public final static String mqtt_password =  "fHulCVGdiH83swYGtCfbl608sLaP1YR2";  //"0QvA3_O9uGhOHaLYtd7qiuXXIBpzUjO8";
+	public final static String virtual_host =  "bsgrnlea ";  //"uipdjarb";
 	public final static int port = 1883;
 
 	//QUEUES

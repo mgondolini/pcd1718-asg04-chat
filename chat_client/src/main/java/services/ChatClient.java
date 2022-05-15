@@ -4,6 +4,9 @@ import com.rabbitmq.client.*;
 import controller.Controller;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.TimeoutException;
@@ -25,10 +28,16 @@ public class ChatClient {
 		this.controller = controller;
 
 		ConnectionFactory factory = new ConnectionFactory();
-		factory.setUsername(mqtt_username);
-		factory.setPassword(mqtt_password);
-		factory.setHost(host);
-		factory.setVirtualHost(virtual_host);
+//		factory.setUsername(mqtt_username);
+//		factory.setPassword(mqtt_password);
+//		factory.setHost(host);
+//		factory.setVirtualHost(virtual_host);
+//		factory.setPort(port);
+		try {
+			factory.setUri("amqps://bsgrnlea:fHulCVGdiH83swYGtCfbl608sLaP1YR2@rat.rmq2.cloudamqp.com/bsgrnlea");
+		} catch (URISyntaxException | NoSuchAlgorithmException | KeyManagementException e) {
+			e.printStackTrace();
+		}
 		Connection connection = factory.newConnection();
 		this.channel = connection.createChannel();
 
