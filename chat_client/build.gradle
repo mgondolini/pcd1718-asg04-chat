@@ -18,7 +18,7 @@ targetCompatibility = 1.8
 
 javafx {
     version = "11.0.2"
-    modules = ['javafx.controls', 'javafx.fxml']
+    modules = ['javafx.controls', 'javafx.fxml', 'javafx.base']
 }
 
 mainClassName = 'client.ClientMain'
